@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product List — 40 Mobile Models</title>
+  <style>
+    :root{--bg:#f6f7fb;--card:#ffffff;--muted:#6b7280;--accent:#0ea5a4}
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0;background:var(--bg);color:#0f172a}
+    header{background:linear-gradient(90deg,#06b6d4 0%, #3b82f6 100%);color:white;padding:22px 20px}
+    .container{max-width:1100px;margin:20px auto;padding:0 16px}
+    h1{margin:0;font-size:20px}
+    .controls{display:flex;gap:12px;align-items:center;margin-top:12px}
+    .search{flex:1}
+    input[type=text],select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e9ef}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:20px}
+    .card{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(12,15,30,0.06);display:flex;flex-direction:column}
+    .imgwrap{height:160px;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#eef2ff}
+    .imgwrap img{max-width:100%;max-height:100%;object-fit:contain}
+    .meta{padding-top:10px;display:flex;flex-direction:column;gap:6px}
+    .brand{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+    .model{font-weight:600}
+    .specs{font-size:13px;color:#374151}
+    .price{margin-top:8px;font-weight:700}
+    .btns{margin-top:auto;display:flex;gap:8px}
+    .btn{flex:1;padding:8px 10px;border-radius:8px;border:0;cursor:pointer}
+    .btn.buy{background:var(--accent);color:white}
+    .btn.details{background:#eef2ff;color:#0f172a}
+    .badge{font-size:11px;padding:4px 8px;background:#f3f4f6;border-radius:999px;color:#374151}
+    .footer{text-align:center;padding:24px;color:var(--muted)}
+    @media (max-width:520px){.imgwrap{height:120px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Mobile Product List — 40 Models</h1>
+      <div class="controls">
+        <div class="search"><input id="search" type="text" placeholder="Search model, spec or price..."></div>
+        <div style="width:180px"><select id="brandFilter"><option value="all">All Brands</option><option value="Apple">Apple (iPhone)</option><option value="Samsung">Samsung</option><option value="Xiaomi">Xiaomi</option><option value="Realme">Realme</option></select></div>
+        <div style="width:120px"><select id="sort"><option value="default">Sort</option><option value="price-asc">Price: Low → High</option><option value="price-desc">Price: High → Low</option></select></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="count" style="margin-top:12px;color:var(--muted)"></div>
+    <div id="grid" class="grid" aria-live="polite"></div>
+    <div class="footer">You can save this file as <strong>product-list.html</strong> and open in your browser. Images are placeholders for demo.</div>
+  </main>
+
+  <script>
+    // Data: 10 iPhone, 10 Samsung, 10 Xiaomi, 10 Realme (total 40)
+    const products = [
+      // iPhone samples
+      {brand:'Apple',model:'iPhone 15 Pro Max',price:129900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEjvE4_95u-F6bjZ6S3LFi7QqllTRdLX--Kzih5J8PkeYV4V1tWCBotLZzLWVZtkgfkmU8tzOekwUrLHloeYrAXAKmFIjfJslDGMairVHev-xvviMokzsIRBolD03FOeEYeLqmztTObesstovldxcU07y-xDc6fFrOEGomumvIz0NP6qhSS1OXIUsJ0UXJnn',ram:'8 GB',storage:'256 GB',camera:'48 MP',battery:'4422 mAh'},
+      {brand:'Apple',model:'iPhone 15 Pro',price:119900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEgWBNIEmZHWqJVb2iwEV5155dnYu2tBp-MVkPvXXHyAjeeyFvl316riuxfXiieHfjM2-xc4Ini9whUMPUZKijo3mt4bS9KGQouEaTh84L49k4Vl_zhe33AwwGY6OjEjhCE4DKvqzl-bfErGtdLS4n_dQowjQokf0chzCqdEpIOR73646sAl0XqYGHKTiTt9',ram:'8 GB',storage:'256 GB',camera:'48 MP',battery:'4323 mAh'},
+      {brand:'Apple',model:'iPhone 15 Plus',price:99900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEiyRHvjltyJhoNkDDl6fYYcZ88B_aF3ZGWbe8sKsqywv54NhkdmyGNs9wfFeyuJAqBtuA4pnEsh71oH4Ccb6aknVxUF0dj5HsLUClAStwdfkCQnOmdrxOZmO7LRsFE8mr4Z1fOvdH3KpbrZBJBdYGR4zqeZZ9jCe6Cr9_CAuhwcZZ_3iZMpTFLedpZBCTd5',ram:'6 GB',storage:'128 GB',camera:'48 MP',battery:'4325 mAh'},
+      {brand:'Apple',model:'iPhone 15',price:79900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEgoWv00lI1YXcjmCE4EWrCzsHL2EQpAT7l7_prHBWv_fw4lgI1z4xKeT-CITggkg1DsCyRiL2GK7TrhVocDwfqMc7WKOwhZAKNQcPMrgklv8OJ1F088Y3n4PQ5peHvNT5FcGFNSIzNz_alAtiTDuH6FnAW-5Gxgg_y1JkN1fe9ffIb6Jytk2-Ik0w2vPr4J',ram:'6 GB',storage:'128 GB',camera:'48 MP',battery:'3877 mAh'},
+      {brand:'Apple',model:'iPhone 14 Pro Max',price:109900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEjc5STia9acQ35Rb5nus5EKAW0evrjHf8gc3BMfHeL4jeQ0TBcTH5xQPsY84G5aRgQwxoXfa1iacDAaBozz8LXlVr6dfFZVd3ncJGjQo4JX1Yy034jnLybXQr3xou14CxFPLv5pY1H3P4ClphU8cH7KSw0V-83ToRu3hAMQGYiVIPRRbX2IsZDtcW6bpak-',ram:'6 GB',storage:'256 GB',camera:'48 MP',battery:'4323 mAh'},
+      {brand:'Apple',model:'iPhone 14 Pro',price:89900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEiEDQZwTALcF_7kjcu_9xSWYfIiksgq3AcA-p8qSW1oTiKerG3h-EHFTFHa6KXvZ2Nohy8lx_4p0IEyq0MQtVKMSFZbbXv84LO4cLmC8uokJerpM0wuFXoq4-PFGu-4zPDbGPmhhhsxxri6f5zNgB_iphSYBlGODlVxZV4C8BKAVXm_NinrffETCN7cBsLJ',ram:'6 GB',storage:'128 GB',camera:'48 MP',battery:'4323 mAh'},
+      {brand:'Apple',model:'iPhone 13',price:59900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEie2oMpBu7kTjRwDJqKJTf3_s88mJJtTlK7hYJlektMXOyzrpaY4STUn_zCTryEpld3uzoM22_Gsauij47f57jJd_bVio7JHzkO8wthFOIjz-ebVxsXteDWQhS87CcZTUYDLxLfGTVL2VDVkey26MeMMT7vy9NnTkdT4hhVXtONM3iECjCH8UQJx0e-Ho7L',ram:'4 GB',storage:'128 GB',camera:'12 MP',battery:'3240 mAh'},
+      {brand:'Apple',model:'iPhone SE (2022)',price:38900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEgHOzri4oqrxtjyusia7SngncPhFxQUIZhELISQDYTCS2oAjne4rLEjz2D0X59pE2H9sUCPQxy0s5qh2UyVCauQb0AdhV5jgRdcsfbO51BWgHnoqaFWDW1o3X92ZGi9HKlLOIaZg1uHmGU5z5Melq_ZFFcrVehwlkhYpPUGGHpx9InuHNeRclRk3b6zbpj_',ram:'4 GB',storage:'64 GB',camera:'12 MP',battery:'2018 mAh'},
+      {brand:'Apple',model:'iPhone 12',price:42900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEjMeSFIJQwBPxZ-lraZcivyhVejme8STLj6oSNdxV1eUl9goRY8s_wlKzLacpZ3IvAvJ0MLfMV0zBnoakOkuRlpfW6H56hkysv67VfhDg6298uiXbbIExhVobHtCd3rp9xLJfzD0kHOoH7Sq2J9PEE1LyxHOIzPgw6CSSIEfYyUtMDa0Q2G5Oj-uQbT2N_4',ram:'4 GB',storage:'64 GB',camera:'12 MP',battery:'2815 mAh'},
+      {brand:'Apple',model:'iPhone 11',price:29900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEhQ0sctpA2H98wjCbjMtTIoTWJVZb_isfN0ge-CXxerypJF-n1QFdQShc-EM_GDZbw7zAW_KHsTWkGuhGHQrC8J17ivQmghgHZkbR7XwxVXwRX6ffcHZ0TMupsN3-rxASDRuvJWGcjOMVy1gLfcVu_1C0ddgbPgdGB1VbBsm6Qo1zQZscATtW2XBkcR3Lbw',ram:'4 GB',storage:'64 GB',camera:'12 MP',battery:'3110 mAh'},
+      // Samsung samples
+      {brand:'Samsung',model:'Galaxy S24 Ultra',price:139900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEgSFFnsNmpgpNC1hCCdctXOMYeXDyX7mKV9GdP-mFDG5xpcEy4WUbkYLHxxTCxxXAjXpr0Zjr1JZbdB16EvtDn3Gznyx3Us42fiaLCW_epmkxeWc2KNhPPPt1v8mKqE90X54s5XQhcaGLR1TOJ4XCZ7C4xnJTTRnXZnrFT96Z0T0cIlJIvnxPzqne6KzXMq',ram:'12 GB',storage:'256 GB',camera:'200 MP',battery:'5000 mAh'},
+      {brand:'Samsung',model:'Galaxy S24+',price:119900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEitaInbaTgAPWIxDwecEjG6QSzJwWxDFRV4vdLx5S0ayvGXhzqfxrtzE6UnQkmDV8fZQ69JcbO-mqiagSQQBwaggje7eff1t1P4DuflNHGyE_gVTBg5lFAIBaV2JwM5rxtI_zeNNhU-O5hwgrlLNTAX31v_ZQB8wy_ez0rTPK372CXvkdDLsHBdxVk1riR6',ram:'8 GB',storage:'256 GB',camera:'50 MP',battery:'4900 mAh'},
+      {brand:'Samsung',model:'Galaxy S24',price:99900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEgo74VlFKY57Snjf-ZW8QMvo2i_6gv6AjbLd18i-JY2bribXmabG-5wKBH-jCiGnMEU4ct_u0kURismTcKMiAteA107LxFJFmrHE5VZf0Na7nqN0vEw-qQnoyfzKaeNJaMOY0mhMWXM7ZE88D_GA_fhsnMskvWKIoNXlkdP4o9dTgQBjFqxvv--dNVcc0HO',ram:'8 GB',storage:'128 GB',camera:'50 MP',battery:'4000 mAh'},
+      {brand:'Samsung',model:'Galaxy Z Fold5',price:244900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEh2t1rFOpCmBpIEjzz7hdLXmvJ74ycIFTXK7xXqD8AouR0o3WDh9cjZbpXpr7yRcSD1mFh7xqNvyzbrfzSyxs0zhsDFECp4IYWlEqA9dtg1lP5H_F3GV0gPEElj3FA3f-PUx7BshcrMhSDPv-suQMu49acEwR3yv0xKcI1LN80YsecpfqcP6qJeS9JodcI-',ram:'12 GB',storage:'512 GB',camera:'50 MP',battery:'4400 mAh'},
+      {brand:'Samsung',model:'Galaxy Z Flip5',price:139900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEgYLa2oaEpmmrHnnFKjjCAYoTIMGWVIO-CSTv5Afiw4wRTdf7Wjqp0nHAvhUBJ_sbwj1DMS9zNkeX4UBNT_1GU-RsQDEZG2N1gRohFjofT4BNQqswus24iEILbcl0U7hbV6hZJvdK-z8o2yDF8vkr_GriyP2S3x85g-XKYyBAX7kIxa6BETpO564CTZMApl',ram:'8 GB',storage:'256 GB',camera:'12 MP',battery:'3700 mAh'},
+      {brand:'Samsung',model:'Galaxy A55',price:37900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEgZ7NlBiGYTbuc9xFKbXFALirwlh3PuXmWVbvcGYyvDqbqJMkB3bmZkSDkv7Mh3OwRppH_JgfsruGwWu_xl05fyIqQJunc7JPG1Hhc6r6njKPBV7ei4U8WmIeqmxZLqnq7IkiuLmEXJiYBToWHPYh1cHmAF23bthngbC34E9T74JGLMZLE8_dyWuNeeGaWT',ram:'8 GB',storage:'128 GB',camera:'50 MP',battery:'5000 mAh'},
+      {brand:'Samsung',model:'Galaxy A35',price:29900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEhuoS2JljApKZSat5qOeJmTFMbuSlHiQb07Ukwq2keBNGz7IggRsHH_Aem85YOhKqPx1id05Q83bwyXbdpfacJzX8CC-R3vdrOeQjC24LHTZHzFr81YUqwrlbYy-YXw9qo9pLcbWWHEvknFcJXdij9TVEHF4kbjwVdB6-VvLxkJSfnLB8rxrcytArkG3OCx',ram:'6 GB',storage:'128 GB',camera:'50 MP',battery:'5000 mAh'},
+      {brand:'Samsung',model:'Galaxy M54',price:25900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEj1RDNCcg8bRa7-ea3OWdYd55rIkbRTSFN8_TV78aW0xoHknbKi8zwWdTivj7b78xEVCQFLmrGJXZnWrvNT4I_te5KXKW1NoyOEnU1WJ5vVE22hcQse7Dj3slEkM8jhNg86mdZ3T-wFbHPbmAqFgGomuj3-OLSdok5lw9OCUU-DnVzxlhy_o9dzubIad0k9',ram:'6 GB',storage:'128 GB',camera:'108 MP',battery:'6000 mAh'},
+      {brand:'Samsung',model:'Galaxy Note20',price:69900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEjAusgZ08yZDtoEL7JrLr6SXNhYZXsZDx_FF4kX1L82JcPFsttfcz9py1qnkt9JmEXK9RaaUgiat1-0xpGg7XqC0uY2DrTMY9iQFGHUn9rY-WaigGOUiRakv3zTnhWPfGbBht5SCqJamA2e26uyySRwVTodP8FkMmBoU7VBwUkXgI71jE22EZl-x-deRzt1',ram:'8 GB',storage:'256 GB',camera:'12 MP',battery:'4300 mAh'},
+      {brand:'Samsung',model:'Galaxy S23 FE',price:47900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEiF24Ug-L3HTunbvy7ozH0ou9n0GYAd3IZ713g3ov_1fUHgQlCp3u_idDC9lYWEjuP4hO1dKsbkQG3T8BVrvJ6W8svkNyK4e8NAkRc9WBpUXjEOVH5VBvFEkL5PX1LGNZTOh3Xrq8WYhX8Ey51SqypvcnX8IO-Y_45SbwRQ_kBUiMW8z05WVJjEw4_e07At',ram:'8 GB',storage:'128 GB',camera:'50 MP',battery:'4500 mAh'},
+      // Xiaomi samples
+      {brand:'Xiaomi',model:'Xiaomi 14 Pro',price:89900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEiUPQSZfhNPiwTh0nY3fC7omwNa_j2ac5UgbTbeLNi7bpZZ-qOI7DINkGG1Oz-Z_ouPsIG8otMWEExlQaL6xWiW8-usAkJ7N6-ri2JUN-PDjvPvkqBfhPUcPF6-Zb0XXJKTnlWuG0R5brrXMJZYn8dEWV9xJrEW42fBIsrFVg8Ln6SrBpSlDwpLWY6kWoOQ',ram:'12 GB',storage:'256 GB',camera:'50 MP',battery:'5000 mAh'},
+      {brand:'Xiaomi',model:'Xiaomi 14',price:69900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEgoVfWuIok68yEffEl8EzWzlintzkzEFf317Lyd0uNDoUhv-LnILR60uCtHydnMoCiqypwSXcuyttHzsLR1UVXfge4BATddzSAZW-mKow5L8MXKGjwUeeHlB8FGtUs8svxJDFB8n0IjXnk2S1yuiGHgzmSVjGD8YSs5IllD4mbK4ApJuSMsBwos_b-oJgiv',ram:'8 GB',storage:'128 GB',camera:'50 MP',battery:'4600 mAh'},
+      {brand:'Xiaomi',model:'Redmi Note 13 Pro',price:34900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEjZaypQwYXys98ItPduYPkJxFrVacYF5mTmlKLBbSeoUbl5sUrHVnCc8trK1hRRdWmIegkdLxZuRR4qAYLKsy4oUoFQSy5BmM_7ZLc95RjlSZAP8dKSzwJJJRPqvcA4TO2hK_Sp1ghxKnuo_F4YGerS2MvIM6Kg2Or1aDnBd9ds7MnRwCHk5B7pVqJGIKP4',ram:'8 GB',storage:'128 GB',camera:'200 MP',battery:'5100 mAh'},
+      {brand:'Xiaomi',model:'Redmi 13C',price:12900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEiRR5BxefY3mSjLyMac9Ks_XYzA50c1qbQJMt3J1L7XyuwuDEDoayxEX7wGdj0SSKB1V1eTBoCcCf9oGdBsH9r9u0_Zenf35aBMXZ4vOKyp0youUvb568QRx2wc6x8DqOYlsIaZSGFty0RGD-Dx-nnMqKiJ-ondSc5qx9_XBRrfJOhVl-Z21WaQx5cA13lc',ram:'4 GB',storage:'64 GB',camera:'50 MP',battery:'5000 mAh'},
+      {brand:'Xiaomi',model:'Poco F6',price:34900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEiKpNFSAS30tAHpwPGMNMESRJpvVbkYamU5RdgwxOUveM9RBkn9DcFkz1k65rxL5c95OhIYx2w3rOzTILpUK2zli50M1m6518EjN39xfE2AhkH4_6wgo9qL85dPVfsw4TpDQAlSMkduAmFatkUTftEx9LmL6jZJXn-xQ6uq3N1s1XPuPkheamyeuNYfmlyy',ram:'12 GB',storage:'256 GB',camera:'64 MP',battery:'5060 mAh'},
+      {brand:'Xiaomi',model:'Mi 11',price:27900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEjhP24Ov0VlKlm_rgWhHGPUqQx7ye9P4G94CQdgGDEwYivJ9uJjc3p141yndnGU7an0ZxLodvGxfl_Q8TzzXFAIa-dfP5VqlCt5nFhvhwYudCBYaI0EcpgwPfXVmruZd09uEM1dc1wRD9Jb5DYqyn4BjTef64VZ6ZCW673jWL-3-oB7PMQ5bJSbOG_ipi6T',ram:'8 GB',storage:'128 GB',camera:'108 MP',battery:'4600 mAh'},
+      {brand:'Xiaomi',model:'Redmi Note 12',price:21900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEi9vNIOYErQWsXzQryBCitRXa-Irbx5zDt2mSLxzGu8sOYi8F_LQjpZ_Q8VtX-MUCMq50xnYRkjBA0X7KNgXlQd7VVEV8sREMY6i3NM9eary44q56WOe_nqz6xGarQDd41T656j9tfItUo6wclbh3p1BuN_On0GUvCcHFUSVYO2Fb2w0VdMk4LfUesp61pl',ram:'6 GB',storage:'128 GB',camera:'50 MP',battery:'5000 mAh'},
+      {brand:'Xiaomi',model:'Xiaomi 12T',price:37900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEihH-4pNaMBl9LiLanX4HvoXNtsQsmh-NhcCFTjB_UPfihu8yWBBSx1MVaP32yx2purII2M-rCNAnvDqUMDEy08JEBkNF4aMg5x5Cw3sb0OO8yo3IsttBGgVm5FC0xkj1XyRB1tF29SBemFRxedojDf19074zU17Bz0lkKJTLtzTj-PhRw_q0q_Dp8dQu5g',ram:'8 GB',storage:'256 GB',camera:'108 MP',battery:'5000 mAh'},
+      {brand:'Xiaomi',model:'Poco X6',price:19900, img:'https://blogger.googleusercontent.com/img/a/AVvXsEhRmVX-8gIk4lb-Ja24Bilkvwlgm8HWHdwZrr_Ozk936hCXTbOk1uueK3TbPdWqR5qCVIldi--63xyZPRzbYZ3GDuzoQoqwVSHUU624kaFaMHFhdL2KmDpWPWudD-QMAvFRPfic5gE9qQ0dnxjT3nA_ZszoTqQbTQn-gLD8bO5ShYoqOYzaKDj7o4kBP4vy',ram:'6 GB',storage:'128 GB',camera:'64 MP',battery:'5000 mAh'},
+      {brand:'Xiaomi',model:'Redmi 12C',price:9990, img:'https://blogger.googleusercontent.com/img/a/AVvXsEglHHTmiJYRMfJzmNpXVX9CPJ9YONaZIsj38KYLnZ8FDcZ8z0znYOUZv8ILbwusslu5mV8HdOopHKzauucf8i3kEvGQbZ3BUpVasf-BzPQ3zG_FBUM70nEXho_a13jkAGUBCqT8it_xT9YayR4LL9kYO8LVjI2HxyoRY0n-LtkTBu5zlXQIuWM5g3lapFss',ram:'3 GB',storage:'64 GB',camera:'50 MP',battery:'5000 mAh'},
+      // Realme samples
+      {brand:'Realme',model:'Realme GT 6',price:59900, img:'https://via.placeholder.com/600x400?text=Realme+GT+6',ram:'12 GB',storage:'256 GB',camera:'50 MP',battery:'5000 mAh'},
+      {brand:'Realme',model:'Realme 12 Pro+',price:34900, img:'https://via.placeholder.com/600x400?text=Realme+12+Pro+',ram:'12 GB',storage:'256 GB',camera:'200 MP',battery:'5000 mAh'},
+      {brand:'Realme',model:'Realme 11',price:24900, img:'https://via.placeholder.com/600x400?text=Realme+11',ram:'8 GB',storage:'128 GB',camera:'108 MP',battery:'5000 mAh'},
+      {brand:'Realme',model:'Realme C55',price:10900, img:'https://via.placeholder.com/600x400?text=Realme+C55',ram:'4 GB',storage:'64 GB',camera:'64 MP',battery:'5000 mAh'},
+      {brand:'Realme',model:'Realme 10 Pro',price:18900, img:'https://via.placeholder.com/600x400?text=Realme+10+Pro',ram:'6 GB',storage:'128 GB',camera:'108 MP',battery:'5000 mAh'},
+      {brand:'Realme',model:'Realme Narzo 70',price:14900, img:'https://via.placeholder.com/600x400?text=Realme+Narzo+70',ram:'6 GB',storage:'128 GB',camera:'50 MP',battery:'5000 mAh'},
+      {brand:'Realme',model:'Realme X7 Max',price:27900, img:'https://via.placeholder.com/600x400?text=Realme+X7+Max',ram:'8 GB',storage:'128 GB',camera:'64 MP',battery:'4500 mAh'},
+      {brand:'Realme',model:'Realme GT Neo 5',price:39900, img:'https://via.placeholder.com/600x400?text=Realme+GT+Neo+5',ram:'12 GB',storage:'256 GB',camera:'50 MP',battery:'5500 mAh'},
+      {brand:'Realme',model:'Realme 9 Pro',price:21900, img:'https://via.placeholder.com/600x400?text=Realme+9+Pro',ram:'8 GB',storage:'128 GB',camera:'64 MP',battery:'5000 mAh'},
+      {brand:'Realme',model:'Realme 8',price:13900, img:'https://via.placeholder.com/600x400?text=Realme+8',ram:'6 GB',storage:'128 GB',camera:'64 MP',battery:'5000 mAh'}
+    ];
+
+    const grid = document.getElementById('grid');
+    const countEl = document.getElementById('count');
+    const brandFilter = document.getElementById('brandFilter');
+    const searchInput = document.getElementById('search');
+    const sortSelect = document.getElementById('sort');
+
+    function formatPrice(n){
+      return '৳ ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function render(list){
+      grid.innerHTML = '';
+      countEl.textContent = `${list.length} products`;
+      list.forEach(p=>{
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="imgwrap"><img src="${p.img}" alt="${p.brand} ${p.model}"></div>
+          <div class="meta">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div class="brand">${p.brand}</div><div class="badge">${p.storage}</div></div>
+            <div class="model">${p.model}</div>
+            <div class="specs">RAM: ${p.ram} · Camera: ${p.camera} · Battery: ${p.battery}</div>
+            <div class="price">${formatPrice(p.price)}</div>
+            <div class="btns">
+              <button class="btn details" onclick="showDetails('${escapeHtml(p.model)}')">Details</button>
+              <button class="btn buy" onclick="addToCart('${escapeHtml(p.model)}')">Buy</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function escapeHtml(str){ return str.replace(/'/g,"\\'").replace(/\"/g,'\\"'); }
+
+    function showDetails(model){
+      const p = products.find(x=>x.model===model);
+      if(!p) return alert('Product not found');
+      alert(`${p.brand} ${p.model}\nPrice: ${formatPrice(p.price)}\nStorage: ${p.storage}\nRAM: ${p.ram}\nCamera: ${p.camera}\nBattery: ${p.battery}`);
+    }
+    function addToCart(model){ alert(model + ' added to cart (demo)'); }
+
+    function applyFilters(){
+      const q = searchInput.value.trim().toLowerCase();
+      const b = brandFilter.value;
+      let result = products.filter(p=>{
+        if(b!=='all' && p.brand !== b) return false;
+        if(!q) return true;
+        // search in multiple fields
+        return (p.model + ' ' + p.brand + ' ' + p.ram + ' ' + p.storage + ' ' + p.camera).toLowerCase().includes(q) || String(p.price).includes(q.replace(/[^0-9]/g,''));
+      });
+      // sort
+      const s = sortSelect.value;
+      if(s==='price-asc') result.sort((a,b)=>a.price-b.price);
+      if(s==='price-desc') result.sort((a,b)=>b.price-a.price);
+      render(result);
+    }
+
+    // events
+    searchInput.addEventListener('input', applyFilters);
+    brandFilter.addEventListener('change', applyFilters);
+    sortSelect.addEventListener('change', applyFilters);
+
+    // initial render
+    render(products);
+  </script>
+</body>
+</html>

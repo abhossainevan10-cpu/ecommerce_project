@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <style>
+.navbar {
+  background: white;
+  padding: 15px;
+  display: flex;
+  justify-content: flex-end;
+}
+.navbar ul {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+}
+.navbar ul li a {
+  text-decoration: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Full Screen Overlay */
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Popup Box */
+.popup {
+  background: white;
+  padding: 40px;
+  width: 400px;
+  border-radius: 10px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+</style>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Django E-Commerce</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<script>
+function openPopup(id) {
+  document.getElementById(id).style.display = "flex";
+}
+
+function closePopup(id) {
+  document.getElementById(id).style.display = "none";
+}
+</script>
+
+<body>
+  <header>
+    <nav>
+      <body>
+
+    <!-- NAVBAR HERE -->
+    <nav class="navbar">
+      <ul>
+        <li><a href="#" onclick="openPopup('homePopup')">Home</a></li>
+        <li><a href="#" onclick="openPopup('productPopup')">Products</a></li>
+        <li><a href="#" onclick="openPopup('cartPopup')">Cart</a></li>
+        <li><a href="#" onclick="openPopup('loginPopup')">Login</a></li>
+      </ul>
+    </nav>
+
+    <!-- POPUP BOXES HERE -->
+    {% include 'popup.html' %}
+
+    <!-- Page specific content -->
+    {% block content %}
+    {% endblock %}
+
+</body>
+
+      <a href="{% url 'home' %}">Home</a> |
+      <a href="{% url 'product_list' %}">Products</a> |
+      <a href="{% url 'cart_detail' %}">Cart</a>
+      {% if user.is_authenticated %}
+        | <a href="{% url 'logout' %}">Logout</a>
+      {% else %}
+        | <a href="{% url 'login' %}">Login</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main>
+    {% if messages %}
+      <ul class="messages">
+        {% for m in messages %}
+          <li>{{ m }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>&copy; 2025 My Shop</p>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

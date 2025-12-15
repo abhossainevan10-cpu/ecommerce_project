@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<style>
+    body{
+        margin:0;
+        font-family: Poppins, sans-serif;
+        background:#0d0d0d;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+        color:white;
+    }
+    .container{
+        width:450px;
+        background:#131313;
+        padding:40px;
+        border-radius:10px;
+        box-shadow:0 0 20px rgba(255,98,0,0.35);
+    }
+    h2{
+        text-align:center;
+        font-size:35px;
+        margin-bottom:25px;
+    }
+    .input-box{
+        margin-bottom:20px;
+    }
+    label{
+        font-size:14px;
+        color:#bbbbbb;
+    }
+    .input-box input{
+        width:100%;
+        background:transparent;
+        border:none;
+        border-bottom:1px solid #444;
+        padding:10px 5px;
+        font-size:16px;
+        color:white;
+        outline:none;
+        margin-top:5px;
+    }
+    .btn{
+        width:100%;
+        padding:12px;
+        border:none;
+        font-size:18px;
+        background:linear-gradient(90deg, #ff6a00, #ff8b33);
+        border-radius:30px;
+        color:white;
+        cursor:pointer;
+        margin-top:10px;
+        font-weight:600;
+    }
+    .login-link{
+        text-align:center;
+        margin-top:18px;
+        font-size:14px;
+        color:#ccc;
+    }
+    .login-link a{
+        color:#ff6a00;
+        text-decoration:none;
+        font-weight:600;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>Register</h2>
+
+    <form>
+        <div class="input-box">
+            <label>Full Name</label>
+            <input type="text" placeholder="Enter your name" required>
+        </div>
+
+        <div class="input-box">
+            <label>Email</label>
+            <input type="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="input-box">
+            <label>Username</label>
+            <input type="text" placeholder="Choose username" required>
+        </div>
+
+        <div class="input-box">
+            <label>Password</label>
+            <input type="password" placeholder="Create password" required>
+        </div>
+
+        <div class="input-box">
+            <label>Confirm Password</label>
+            <input type="password" placeholder="Re-enter password" required>
+        </div>
+
+        <button class="btn" type="submit">Create Account</button>
+    </form>
+
+    <div class="login-link">
+        Already have an account? <a href="login.html">Login</a>
+    </div>
+</div>
+
+</body>
+</html>
