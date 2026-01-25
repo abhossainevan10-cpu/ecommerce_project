@@ -1,4 +1,5 @@
 Django
 gunicorn
 whitenoise
-
+dj-database-url
+psycopg2-binarygit add requirements.txt
