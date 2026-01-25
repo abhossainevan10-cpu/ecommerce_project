@@ -1,5 +1,8 @@
-Django
+Django<5.0,>=4.2
 gunicorn
 whitenoise
+pillow
+python-dotenv
+requests
 dj-database-url
-psycopg2-binarygit add requirements.txt
+psycopg2-binary
