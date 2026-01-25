@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Logout - ES Mobile Shop</title>
+  <style>
+    :root{
+      --bg-dark:#0f1013;
+      --panel:#121214;
+      --accent1: #ff6a00;
+      --accent2: #ff8c3b;
+      --muted: #bdbdbd;
+      --glass: rgba(255,255,255,0.03);
+      --radius: 28px;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%; margin:0; background: linear-gradient(180deg,#070708,#0f1013); display:flex; align-items:center; justify-content:center;}
+    
+    .frame{
+      width: 920px;
+      max-width: calc(100% - 32px);
+      height: 560px;
+      background: linear-gradient(90deg, rgba(255,106,0,0.06), rgba(255,106,0,0.02));
+      border-radius: 12px;
+      padding: 16px;
+      box-sizing: border-box;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,106,0,0.04);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    .panel{
+      background: linear-gradient(180deg,var(--panel), #0b0b0c);
+      color: #fff;
+      padding: 48px 40px;
+      position: relative;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items: flex-start;
+      gap:24px;
+      border-radius: 6px;
+    }
+
+    h1{
+      margin:0;
+      font-size:40px;
+      letter-spacing:0.4px;
+      font-weight:700;
+      color:#fff;
+    }
+
+    .subtitle{ 
+      color:var(--muted); 
+      font-size:16px; 
+      line-height: 1.6;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .btn{
+      text-align: center;
+      text-decoration: none;
+      background: linear-gradient(180deg, var(--accent1), var(--accent2));
+      border: 0;
+      color:#fff;
+      padding: 14px 18px;
+      border-radius: 36px;
+      font-weight:700;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(255,106,0,0.16), inset 0 -3px 0 rgba(0,0,0,0.12);
+      transition: transform 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: none;
+    }
+
+    .visual-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+      color: #fff;
+      padding: 20px;
+    }
+
+    @media (max-width:880px){
+      .frame{ grid-template-columns: 1fr; height:auto; padding:12px; gap:12px; }
+      .panel{ padding:40px 24px; align-items: center; text-align: center;}
+      .visual-card { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="panel">
+    <div>
+      <h1>Logged Out</h1>
+      <div class="subtitle">আপনি সফলভাবে লগআউট করেছেন। আমাদের সাথে থাকার জন্য ধন্যবাদ!</div>
+    </div>
+
+    <div class="btn-group">
+      <a href="{% url 'login' %}" class="btn">Login Again</a>
+      
+      <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+    </div>
+  </div>
+
+  <div class="visual-card">
+    <div style="
+        font-size: 48px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        margin-bottom: 12px;
+        background: linear-gradient(90deg, #ff6a00, #ff8c3b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    ">
+      ES Mobile Shop
+    </div>
+    <div style="
+        font-size: 18px;
+        color: rgba(255,255,255,0.85);
+        letter-spacing: 0.5px;
+    ">
+      Premium Mobile & Accessories
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

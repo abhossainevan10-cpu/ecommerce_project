@@ -1,11 +1,11 @@
+# orders/urls.py
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
-    path('', views.checkout, name='orders'),
+    path('', views.checkout, name='orders_home'),  # ✅ ADD THIS
     path('checkout/', views.checkout, name='checkout'),
-    path('payment-started/', views.payment_started, name='payment_started'),
-    path('payment-success/', views.payment_success, name='payment_success'),
+    path('payment/<int:order_id>/', views.payment_started, name='payment_started'),
+    path('payment-success/<int:order_id>/', views.payment_success, name='payment_success'),
 ]
-
-

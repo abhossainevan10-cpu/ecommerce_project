@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
+# orders/views.py
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Order, OrderItem
 from cart.cart import Cart
+
 
 def checkout(request):
     cart = Cart(request)
@@ -14,22 +16,26 @@ def checkout(request):
             OrderItem.objects.create(
                 order=order,
                 product=item['product'],
-                price=item['product'].price,
+                price=item['price'],
                 quantity=item['quantity']
             )
 
-        # clear cart
         cart.clear()
 
-        return redirect('payment_started')
+        return redirect('payment_started', order_id=order.id)
 
     return render(request, 'orders/checkout.html', {'cart': cart})
 
 
-def payment_started(request):
-    return render(request, 'orders/payment_started.html')
+def payment_started(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'orders/payment_started.html', {'order': order})
 
 
-def payment_success(request):
-    return render(request, 'orders/payment_success.html')
+def payment_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    order.paid = True
+    order.save()
+
+    return render(request, 'orders/payment_success.html', {'order': order})
 

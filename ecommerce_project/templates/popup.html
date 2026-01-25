@@ -1,0 +1,85 @@
+<style>
+    /* Full Screen Overlay */
+    .overlay {
+        display: none; /* জাভাস্ক্রিপ্ট দিয়ে এটি ফ্লেক্স করা হবে */
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 10000;
+        backdrop-filter: blur(8px); /* আধুনিক ব্লার এফেক্ট */
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Popup Box */
+    .popup {
+        background: #fff;
+        width: 90%;
+        max-width: 400px;
+        padding: 40px 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        position: relative;
+    }
+
+    .popup h2 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .popup p {
+        color: #555;
+        font-size: 18px;
+        margin-bottom: 25px;
+    }
+
+    .close-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .close-btn:hover {
+        transform: scale(1.05);
+        background: #c0392b;
+    }
+</style>
+
+<div id="homePopup" class="overlay">
+    <div class="popup animate__animated animate__zoomIn">
+        <h2 style="color: #2c3e50;">🔥 Special Offer!</h2>
+        <p>Get <strong>10% off</strong> on your first purchase.</p>
+        <button class="close-btn" onclick="closePopup('homePopup')">Close Now</button>
+    </div>
+</div>
+
+<script>
+    // পেজ লোড হওয়ার ২ সেকেন্ড পর পপআপটি অটোমেটিক দেখাবে
+    window.onload = function() {
+        setTimeout(function() {
+            const popupOverlay = document.getElementById('homePopup');
+            popupOverlay.style.display = 'flex';
+        }, 2000); 
+    };
+
+    function closePopup(id) {
+        const overlay = document.getElementById(id);
+        const popupContent = overlay.querySelector('.popup');
+
+        // যাওয়ার সময় সুন্দর আউট অ্যানিমেশন
+        popupContent.classList.remove('animate__zoomIn');
+        popupContent.classList.add('animate__zoomOut');
+
+        // অ্যানিমেশন শেষ হলে ডিসপ্লে হাইড করা
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 500);
+    }
+</script>

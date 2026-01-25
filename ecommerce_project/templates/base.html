@@ -1,119 +1,159 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
-  <style>
-.navbar {
-  background: white;
-  padding: 15px;
-  display: flex;
-  justify-content: flex-end;
-}
-.navbar ul {
-  display: flex;
-  list-style: none;
-  gap: 30px;
-}
-.navbar ul li a {
-  text-decoration: none;
-  font-size: 18px;
-  cursor: pointer;
-}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Django E-Commerce{% endblock %}</title>
 
-/* Full Screen Overlay */
-.overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.7);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    
+    <style>
+        :root { 
+            --primary: #00c2cb; 
+            --dark: #2c3e50;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
 
-/* Popup Box */
-.popup {
-  background: white;
-  padding: 40px;
-  width: 400px;
-  border-radius: 10px;
-  text-align: center;
-  animation: fadeIn 0.3s ease-in-out;
-}
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
 
-@keyframes fadeIn {
-  from { transform: scale(0.7); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-</style>
+        /* 3D Navbar Styling */
+        .navbar { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 15px 50px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            border-bottom: 1px solid #ddd; 
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Django E-Commerce</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        .navbar ul { display: flex; list-style: none; gap: 30px; margin: 0; }
+        .navbar ul li a { 
+            text-decoration: none; 
+            font-size: 16px; 
+            font-weight: 500;
+            color: var(--dark); 
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* Hover Animation for Nav Links */
+        .navbar ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0; height: 2px;
+            background: var(--primary);
+            bottom: -5px; left: 0;
+            transition: width 0.3s ease;
+        }
+        .navbar ul li a:hover::after { width: 100%; }
+        .navbar ul li a:hover { color: var(--primary); }
+
+        /* Full Screen Overlay with Blur */
+        .overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            display: none; justify-content: center; align-items: center; 
+            z-index: 9999; 
+            backdrop-filter: blur(8px); 
+        }
+
+        /* 3D Popup Box */
+        .popup { 
+            background: white; 
+            padding: 40px; 
+            width: 400px; 
+            border-radius: 20px; 
+            text-align: center; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform-style: preserve-3d;
+        }
+
+        /* Messages Styling */
+        .messages { 
+            list-style: none; padding: 15px; 
+            background: #dcfce7; color: #166534; 
+            text-align: center; border-radius: 8px;
+            margin: 20px auto; width: 80%;
+            animation: slideInDown 0.5s;
+        }
+
+        /* Global 3D Card Effect for Products */
+        .product-card {
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            perspective: 1000px;
+        }
+        .product-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+        }
+    </style>
+
+    <script>
+        function openPopup(id) { 
+            const el = document.getElementById(id);
+            el.style.display = "flex"; 
+            el.querySelector('.popup').classList.add('animate__animated', 'animate__zoomIn');
+        }
+        function closePopup(id) { 
+            const el = document.getElementById(id);
+            const popup = el.querySelector('.popup');
+            popup.classList.replace('animate__zoomIn', 'animate__zoomOut');
+            setTimeout(() => {
+                el.style.display = "none";
+                popup.classList.remove('animate__zoomOut');
+            }, 500);
+        }
+    </script>
 </head>
-<script>
-function openPopup(id) {
-  document.getElementById(id).style.display = "flex";
-}
-
-function closePopup(id) {
-  document.getElementById(id).style.display = "none";
-}
-</script>
 
 <body>
-  <header>
-    <nav>
-      <body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h2 style="margin:0; color:var(--primary);">ES Mobile Shop</h2>
+            </div>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'product_list' %}">Products</a></li>
+                <li><a href="{% url 'cart_detail' %}">Cart</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Logout ({{ user.username }})</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
 
-    <!-- NAVBAR HERE -->
-    <nav class="navbar">
-      <ul>
-        <li><a href="#" onclick="openPopup('homePopup')">Home</a></li>
-        <li><a href="#" onclick="openPopup('productPopup')">Products</a></li>
-        <li><a href="#" onclick="openPopup('cartPopup')">Cart</a></li>
-        <li><a href="#" onclick="openPopup('loginPopup')">Login</a></li>
-      </ul>
-    </nav>
-
-    <!-- POPUP BOXES HERE -->
     {% include 'popup.html' %}
 
-    <!-- Page specific content -->
-    {% block content %}
-    {% endblock %}
+    <main class="animate__animated animate__fadeIn">
+        {% if messages %}
+            <ul class="messages">
+                {% for m in messages %}
+                    <li>{{ m }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-</body>
+        {% block content %}
+        {% endblock %}
+    </main>
 
-      <a href="{% url 'home' %}">Home</a> |
-      <a href="{% url 'product_list' %}">Products</a> |
-      <a href="{% url 'cart_detail' %}">Cart</a>
-      {% if user.is_authenticated %}
-        | <a href="{% url 'logout' %}">Logout</a>
-      {% else %}
-        | <a href="{% url 'login' %}">Login</a>
-      {% endif %}
-    </nav>
-  </header>
+    <footer style="text-align: center; padding: 40px; margin-top: 60px; background: #fff; border-top: 1px solid #eee;">
+        <p style="color: #64748b;">&copy; 2026 ES Mobile Shop | Developed with Django</p>
+    </footer>
 
-  <main>
-    {% if messages %}
-      <ul class="messages">
-        {% for m in messages %}
-          <li>{{ m }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer>
-    <p>&copy; 2025 My Shop</p>
-  </footer>
-
-  <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

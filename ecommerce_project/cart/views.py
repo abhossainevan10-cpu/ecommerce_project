@@ -1,22 +1,34 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from .cart import Cart
 from products.models import Product
-from django.shortcuts import redirect, get_object_or_404
 
 def cart_add(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
     cart = Cart(request)
-    cart.add(product=product, quantity=1)
+    product = get_object_or_404(Product, id=product_id)
+    cart.add(product=product) # এটিই ডাটাবেস থেকে কার্টে আইটেম যোগ করে
     return redirect('cart_detail')
 
+
 def cart_remove(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    """কার্ট থেকে নির্দিষ্ট প্রোডাক্ট মুছে ফেলার ভিউ"""
     cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    
+    # কার্ট থেকে প্রোডাক্ট রিমুভ করা হচ্ছে
     cart.remove(product)
+    
     return redirect('cart_detail')
 
 def cart_detail(request):
+    """কার্টে থাকা সব প্রোডাক্ট দেখানোর ভিউ"""
     cart = Cart(request)
-    return render(request, 'cart/cart.html', {'cart': cart})
+    return render(request, 'cart/cart_detail.html', {'cart': cart})
+
+def cart_update(request, product_id):
+    """প্রয়োজন হলে প্রোডাক্টের পরিমাণ কমানো বা বাড়ানোর জন্য এটি ব্যবহার করতে পারেন"""
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    # এখানে লজিক অনুযায়ী quantity আপডেট করা যায়
+    return redirect('cart_detail')
 
 

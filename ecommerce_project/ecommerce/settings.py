@@ -1,16 +1,16 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret')
-DEBUG=False
-ALLOWED_HOSTS=['*']
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-
+ALLOWED_HOSTS = [os.getenv('RENDER_EXTERNAL_HOSTNAME', '*')]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -22,6 +22,7 @@ INSTALLED_APPS = [
 
     'core',
     'accounts',
+    'rest_framework',
     'products',
     'cart',
     'orders',
@@ -59,10 +60,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        # Database URL na pele default hishebe SQLite e cholbe (Local development-er jonno)
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = []
@@ -76,8 +78,25 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SSL_STORE_ID = os.getenv('SSLCOMMERZ_STORE_ID')
-SSL_STORE_PASS = os.getenv('SSLCOMMERZ_STORE_PASS')
+SSL_STORE_ID = 'testbox'
+SSL_STORE_PASS = 'qwerty'
+
+SSL_STORE_ID = os.getenv('SSLCOMMERZ_STORE_ID', 'testbox')
+SSL_STORE_PASS = os.getenv('SSLCOMMERZ_STORE_PASS', 'qwerty')
+SSL_IS_SANDBOX = True
+LOGOUT_REDIRECT_URL = 'home'
+LOGOUT_ON_GET = True
+CART_SESSION_ID = 'cart'
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'abhossainevan10@gmail.com'  # আপনার জিমেইল
+EMAIL_HOST_PASSWORD = 'lmmw kyph bufx najq' # জিমেইল অ্যাপ পাসওয়ার্ড
+STATIC_ROOT = BASE_DIR / 'staticfiles'

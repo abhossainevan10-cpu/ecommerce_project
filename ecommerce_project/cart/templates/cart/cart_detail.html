@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - ES Mobile Shop</title>
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #f6f7fb; margin: 0; padding: 20px; }
+        .cart-container { max-width: 900px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #0ea5a4; border-bottom: 2px solid #0ea5a4; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; background: #0ea5a4; color: white; padding: 12px; }
+        td { padding: 12px; border-bottom: 1px solid #ddd; }
+        .product-img { width: 80px; border-radius: 5px; }
+        .total-section { text-align: right; margin-top: 20px; font-size: 20px; font-weight: bold; }
+        .btn-checkout { display: inline-block; background: #0ea5a4; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+        .btn-remove { color: #ff4d4d; text-decoration: none; font-weight: bold; }
+        .btn-continue { display: inline-block; margin-top: 20px; color: #666; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="cart-container">
+    <h1>Shopping Cart</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                {% with product=item.product %}
+                <tr>
+                    <td>
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="product-img">
+                        {% else %}
+                            <img src="https://via.placeholder.com/80" class="product-img">
+                        {% endif %}
+                    </td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>৳ {{ item.total_price }}</td>
+                    <td>
+                        <a href="{% url 'cart_remove' product.id %}" class="btn-remove">Remove</a>
+                    </td>
+                </tr>
+                {% endwith %}
+            {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 30px;">Your cart is empty!</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+   <div class="total-section">
+        Total Amount: ৳ {{ cart.get_total_price }}
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="/" class="btn-continue">← Continue Shopping</a>
+        
+        {% if cart|length > 0 %}
+            <a href="{% url 'checkout' %}" class="btn-checkout">Proceed to Checkout</a>
+        {% else %}
+            <a href="#" class="btn-checkout" style="background: #ccc; cursor: not-allowed;" onclick="alert('আপনার কার্ট খালি!'); return false;">Proceed to Checkout</a>
+        {% endif %}
+    </div>

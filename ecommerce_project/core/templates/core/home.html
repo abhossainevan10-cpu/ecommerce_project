@@ -3,209 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ES Mobile Shop</title>
+    <title>ES Mobile Shop - Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f6f7fb; color: #333; }
-
-        /* Navbar */
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 50px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;
-        }
-        nav .logo { font-size: 24px; font-weight: 700; color: #0ea5a4; }
-        nav ul { display: flex; list-style: none; gap: 20px; }
-        nav ul li a { text-decoration: none; color: #333; font-weight: 500; transition: color 0.3s; }
+        body { background-color: #f6f7fb; color: #333; line-height: 1.6; }
+        
+        /* Navigation */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        nav .logo { font-size: 24px; font-weight: 700; color: #0ea5a4; text-decoration: none; }
+        nav ul { display: flex; list-style: none; gap: 25px; align-items: center; }
+        nav ul li a { text-decoration: none; color: #444; font-weight: 500; transition: 0.3s; }
         nav ul li a:hover { color: #0ea5a4; }
-        nav .search-cart { display: flex; gap: 10px; align-items: center; }
-        nav input[type="text"] { padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; }
-        nav button { padding: 6px 12px; border: none; background-color: #0ea5a4; color: #fff; border-radius: 5px; cursor: pointer; }
-        nav button:hover { background-color: #059fa2; }
+        
+        /* Cart Badge Style */
+        .cart-badge { background: #ff4d4d; color: white; padding: 2px 8px; border-radius: 50%; font-size: 12px; margin-left: 5px; }
 
-        /* Hero */
-        .hero { background: linear-gradient(to right, #0ea5a4, #028e8e); color: #fff; text-align: center; padding: 80px 20px; }
-        .hero h1 { font-size: 48px; margin-bottom: 10px; }
-        .hero p { font-size: 18px; margin-bottom: 20px; }
-        .hero .cta-btn { display: inline-block; padding: 10px 25px; margin: 0 10px; background-color: #fff; color: #0ea5a4; font-weight: 500; border-radius: 5px; text-decoration: none; transition: 0.3s; }
-        .hero .cta-btn:hover { background-color: #0ca89e; color: #fff; }
+        /* Hero Section */
+        .hero { background: linear-gradient(135deg, #0ea5a4, #028e8e); color: #fff; text-align: center; padding: 100px 20px; }
+        .hero h1 { font-size: 42px; margin-bottom: 10px; }
+        .hero p { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
+        .cta-btn { background: white; padding: 12px 30px; color: #0ea5a4; text-decoration: none; border-radius: 50px; font-weight: bold; transition: 0.3s; }
+        .cta-btn:hover { background: #f0f0f0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
 
-        /* Categories */
-        .categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; padding: 50px; text-align: center; }
-        .categories div { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: 0.3s; cursor: pointer; }
-        .categories div:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .categories img { width: 100px; margin-bottom: 10px; }
+        /* Featured Section */
+        .featured { max-width: 1200px; margin: 0 auto; padding: 60px 20px; text-align: center; }
+        .featured h2 { font-size: 32px; margin-bottom: 40px; color: #222; position: relative; padding-bottom: 10px; }
+        .featured h2::after { content: ''; width: 60px; height: 4px; background: #0ea5a4; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
 
-        /* Featured Products */
-        .featured { padding: 50px; text-align: center; }
-        .featured h2 { margin-bottom: 40px; font-size: 32px; color: #0ea5a4; }
-        .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .product-card { background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: 0.3s; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .product-card img { width: 100%; border-radius: 10px; margin-bottom: 15px; }
-        .product-card h3 { margin-bottom: 5px; font-size: 18px; }
-        .product-card p { margin-bottom: 10px; font-weight: 500; color: #0ea5a4; }
-        .product-card button { padding: 8px 15px; border: none; background-color: #0ea5a4; color: #fff; border-radius: 5px; cursor: pointer; }
-        .product-card button:hover { background-color: #059fa2; }
+        /* Product Grid */
+        .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; }
+        .product-card { background-color: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #eee; }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .product-card img { width: 100%; height: 220px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; }
+        .product-card h3 { font-size: 18px; margin-bottom: 10px; color: #333; }
+        .product-card .price { font-size: 20px; font-weight: 700; color: #0ea5a4; margin-bottom: 15px; }
+        
+        .buy-btn { display: block; width: 100%; padding: 12px; border: none; background-color: #0ea5a4; color: #fff; border-radius: 8px; cursor: pointer; text-decoration: none; text-align: center; font-weight: bold; transition: 0.3s; }
+        .buy-btn:hover { background-color: #028e8e; }
 
         /* Footer */
-        footer { background-color: #0ea5a4; color: #fff; padding: 50px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        footer h4 { margin-bottom: 15px; }
-        footer ul { list-style: none; }
-        footer ul li { margin-bottom: 10px; }
-        footer ul li a { color: #fff; text-decoration: none; transition: 0.3s; }
-        footer ul li a:hover { text-decoration: underline; }
-        footer p { grid-column: 1/-1; text-align: center; margin-top: 20px; opacity: 0.8; }
+        footer { background-color: #222; color: #bbb; padding: 60px 50px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        footer h4 { color: #fff; margin-bottom: 20px; font-size: 20px; }
+        footer p { font-size: 14px; margin-bottom: 10px; }
+        .footer-bottom { grid-column: 1/-1; text-align: center; border-top: 1px solid #444; padding-top: 20px; margin-top: 20px; }
     </style>
 </head>
 <body>
+<nav>
+    <a href="{% url 'product_list' %}" class="logo">ES Mobile Shop</a>
+    <ul>
+        <li><a href="{% url 'product_list' %}">Home</a></li>
+        <li><a href="{% url 'product_list' %}">Products</a></li>
+        <li>
+            <a href="{% url 'cart_detail' %}">
+                Cart <span class="cart-badge">{{ cart|length }}</span>
+            </a>
+        </li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'login' %}">Log In</a></li>
+        {% endif %}
+    </ul>
+</nav>
 
-    <!-- Navbar -->
-    <nav>
-        <div class="logo">ES Mobile Shop</div>
-        <ul>
-            <a href="/products">Products</a>
-            <a href="/cart">Cart</a>
-            <a href="/orders">Orders</a>
-            <a href="/accounts/login/">Log In</a>
-
-
-        </ul>
-        <div class="search-cart">
-            <input type="text" placeholder="Search mobiles...">
-            <button>Search</button>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
     <section class="hero">
-        <h1>Welcome to ES Mobile Shop</h1>
-        <p>Latest Smartphones | Best Prices | 100% Genuine Products</p>
-        <a href="/products/" class="cta-btn">Shop Now</a>
-        <a href="/deals/" class="cta-btn">See Deals</a>
+        <h1>Latest Smartphones, Best Prices</h1>
+        <p>100% Genuine Products with Official Warranty</p>
+        <a href="/products/" class="cta-btn">Explore Models</a>
     </section>
 
-    <!-- Categories -->
-    <section class="categories">
-        <div>
-            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEh3W5sLLsUy4JWxUCD_dTrl53rRfHpEK4emAkAVsxzvuwGE8p0bN3X5_eRhkVhE-tz_4CZVIY5IwK7znCTXWXdY9Xfxv4YTXuCUgbWkh6Ucba1d6vfSaL6zwdAZn8cwGhENYoYANzx6fOAvLk_IOJh_iviGh2l_HE5kAXSFJ-eCGZSUF_rfywhhUnCxO8D-" alt="Apple">
-            <h3>Apple</h3>
-        </div>
-        <div>
-            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEjrFdYUx6uaMeQ8C9FJS9ERtYTcf20yk7wHW7EfZvscja7diIZ4IrdRouoWXkHYwWQv4dQFROyuAejufMpAborAnoa2L7jiFaRGpVLOMZhJK0bzgJzgzq5L0pnVTZRddmTtvU0aLSKv3lfTthhaGc0OyKSIFQSvwWaEG0D65wO8EkFKAuzzwc-piKARO1Km" alt="Samsung">
-            <h3>Samsung</h3>
-        </div>
-        <div>
-            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEihaR7V-ABJMlxgksP4JEY9KZmETxW9iLAy9YzqYwp5rj5dOmLlqknITFtd3JkRCYRrBcbg-01bH-2Punu4UwB-krM7uqQCdLN87-n1Xg08JZdgpc6Ve1drp3YDkAfv64IzJ5DVil9DmoMK-wZewkezfaHHavRftD1vpncX8A2YdzUtNh996ELce-WfXd9P" alt="Xiaomi">
-            <h3>Xiaomi</h3>
-        </div>
-        <div>
-            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEh1KoCBxADzQVfQiv5KV4W2QclweQ2Hnjo_TBKGFEpqR8hF02eWx8RpOO-GbbUU51RT2lzl2pB4bsCGG4MsLFrbm4vN_f3GonOvwW6St7R4xR-IhkjyUV-oLVRTKL6_FofCvQdz3qhl7Yx66PkCbFBAJMEgJDW0oej92_S98FbQCwtq90cuyn3vnyTNprBY" alt="Realme">
-            <h3>Realme</h3>
-        </div>
-    </section>
-
-
-    <!-- Featured Products -->
     <section class="featured">
         <h2>Featured Products</h2>
         <div class="products">
+            {% for p in products %}
             <div class="product-card">
-                <img src="https://blogger.googleusercontent.com/img/a/AVvXsEiUN_7NKJeOhOPaW_l-GmkFTqciQ4PP7PQYaqd1ESZiJtF1csiSR7lggiX-Qq_6fDnaO-v5h0D_xytSVcGh7QCMtNKvszIc1CE7SR-YwTWBNFyETj18V2-77nR04IsIfDMRznN-4DjR1gCfFUC5V1wwg1NatKS2Ci9AXTy7GwRt0rhnGnl_eRzze_JfxV8m" alt="iPhone 14 Pro">
-                <h3>iPhone 14 Pro</h3>
-                <p>$89,900</p>
-                <button>Add to Cart</button>
+                {% if p.image %}
+                    <img src="{{ p.image.url }}" alt="{{ p.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/220" alt="No Image">
+                {% endif %}
+                
+                <h3>{{ p.name }}</h3>
+                <p class="price">৳ {{ p.price }}</p>
+                
+                <a href="{% url 'cart_add' p.id %}" class="buy-btn">Add to Cart</a>
             </div>
-            <div class="product-card">
-                <img src="https://blogger.googleusercontent.com/img/a/AVvXsEi2o3VtNVmx_0CPUqWEtVg5P4hSLyd0bg_b1QAZ1iUvbwBq9rnpufbQr42zeAnqZtkQi_Q3L4N79ZQfKAffI26Ry7cS8qVKiKNO5Ley7LFJcY1gDW9fZ8P4sIRu2yC3ju3ahbBMd7ROMO-WXN3Fr-a4mB-EgSEbmjbJEwhHHqYWL-btkS-rMlClMKFVvE5_" alt="Samsung Galaxy S22">
-                <h3>Samsung Galaxy S22</h3>
-                <p>$52000</p>
-                <button>Add to Cart</button>
+            {% empty %}
+            <div style="grid-column: 1/-1;">
+                <p>No products available right now. Check back later!</p>
             </div>
-            <div class="product-card">
-                <img src="https://blogger.googleusercontent.com/img/a/AVvXsEggr2-CKYJGzYbSoX-gtFgHGX25FsLQA_KOm7ziO3ZvQ-iezQgnqoY7zsOFWf_TxaAteuCSvWmiM5c7c6fn64itBR7YaM0CF3206aIcSIF7x2tiJ6F8btMQPw7tc-7xrcwoORNVZxCSNYz5Z0fmHx4sa-LQxT2ylvofpdpZZlMDqvROZBN9PRDfRYQcAymo" alt="Xiaomi Redmi Note 11">
-                <h3>Xiaomi Redmi Note 11</h3>
-                <p>$24499</p>
-                <button>Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <img src="https://blogger.googleusercontent.com/img/a/AVvXsEieIhXZLBo43jZXj0WUbB8j4w0Ucogd-vxWL_dOmYYsD6OlZuVxys2IT-kAVCJ-f9yFCDTwdM1RLZe3lfXYVuQH2WrpnlHFJ5oA0UTOu_EMQi-GTGxDmxNPTj6qxkIBq4nfM7XeIxkISRs3r6h72G5b9cLquPxmpKgX3lUeHjpG4NzU9wuJkot34ypZ6_6h" alt="Realme 9 Pro">
-                <h3>Realme 9 Pro</h3>
-                <p>$29990</p>
-                <button>Add to Cart</button>
-            </div>
+            {% endfor %}
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-  <!-- About Us -->
-  <div class="footer-column">
-    <h4>About Us</h4>
-    <ul>
-      <li>Company Info</li>
-      <li>📍 JOYPURHAT, RAJSHAHI</li>
-      <li>📧 esmobileshop.com</li>
-      <li>📞 +8801880528312</li>
+    <footer>
+        <div class="footer-column">
+            <h4>About ES Shop</h4>
+            <p>Your trusted partner for the latest mobile technology in Bangladesh. Quality and service are our priorities.</p>
+        </div>
+        <div class="footer-column">
+            <h4>Contact Info</h4>
+            <p>📍 Joypurhat, Rajshahi Division</p>
+            <p>📞 +8801880528312</p>
+            <p>✉️ support@esmobileshop.com</p>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 ES Mobile Shop. Developed with ❤️ in Joypurhat.</p>
+        </div>
+    </footer>
 
-      <li>Our Team</li>
-      <li>Md. Abu Hossain Evan – Owner & Shop Manager</li>
-
-      <li>Careers</li>
-      <li>আমরা নিয়োগ দিচ্ছি:</li>
-      <li>Salesman | Mobile Technician</li>
-
-      <li>
-        <a href="https://wa.me/880180528312" target="_blank" class="apply-btn">
-          Apply via WhatsApp
-        </a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Customer Service -->
-  <div class="footer-column">
-    <h4>Customer Service</h4>
-    <p>
-      Our support team is always ready to help you with orders, products, delivery, and warranty.  
-      Service Time: 10 AM – 10 PM (Sat–Thu)
-    </p>
-
-    <ul>
-      <li>Contact</li>
-      <li>Phone: 01880528312</li>
-      <li>Email: esmobileshop@gmail.com</li>
-      <li>JOYPURHAT, RAJSHAHI</li>
-      <li>
-        Facebook:
-        <a href="https://www.facebook.com/mdabuhossain.evan/" target="_blank">
-          Visit Page
-        </a>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Quick Links -->
-<!-- Quick Links -->
-<div class="footer-column">
-  <h4>Quick Links</h4>
-  <ul>
-    <li><a href="#">Shop All</a></li>
-    <li><a href="#">Offers</a></li>
-    <li><a href="#">New Arrivals</a></li>
-  </ul>
-
-  <!-- FAQ & Info -->
-  <div class="footer-info">
-    <h5>FAQ</h5>
-    <p><strong>Are your products original?</strong> Yes, 100% genuine with warranty.</p>
-    <p><strong>How long for delivery?</strong> 1–2 days in Dhaka, 2–4 days outside Dhaka.</p>
-    <p><strong>Do you offer Cash on Delivery?</strong> Yes, available.</p>
-
-    <h5>Shipping & Returns</h5>
-    <p><strong>Shipping:</strong> Fast home delivery across Bangladesh. Charges may apply.</p>
-    <p><strong>Returns:</strong> Report within 24 hours for damaged or wrong products. Used items are not returnable.</p>
-  </div>
-</div>
-
-  </footer>
+</body>
+</html>

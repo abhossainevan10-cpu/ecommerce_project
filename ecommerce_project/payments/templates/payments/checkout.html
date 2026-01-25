@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <style>
+      body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f3f4f6;color:#0f172a}
+  .container{max-width:800px;margin:40px auto;padding:0 16px}
+  h1{font-size:24px;font-weight:700;margin-bottom:20px;text-align:center}
+  .card{background:#fff;border-radius:16px;box-shadow:0 10px 26px rgba(0,0,0,.08);padding:24px;display:flex;flex-direction:column;gap:18px}
+  label{display:block;font-weight:600;margin-bottom:6px}
+  input, select, textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #e5e7eb;font-size:14px;margin-bottom:12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .summary{background:#f8fafc;border-radius:12px;padding:16px}
+  .summary h2{margin-top:0;font-size:18px}
+  .summary div{display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px}
+  .total{font-weight:700;font-size:16px;border-top:1px solid #e5e7eb;padding-top:6px}
+  .btn{background:#0ea5a4;color:#fff;padding:12px;border:0;border-radius:10px;font-weight:600;cursor:pointer;font-size:16px;width:100%}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}}
+    .btn { display: block; text-decoration: none; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Checkout</h1>
+    
+    <form action="{% url 'start_payment' %}" method="POST">
+      {% csrf_token %}
+      
+      <div class="card">
+        <h2>Billing Details</h2>
+        <div class="grid">
+          <div>
+            <label for="fname">First Name</label>
+            <input type="text" name="first_name" id="fname" placeholder="John" required>
+          </div>
+          <div>
+            <label for="lname">Last Name</label>
+            <input type="text" name="last_name" id="lname" placeholder="Doe" required>
+          </div>
+        </div>
+        
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="john@example.com" required>
+        
+        <label for="phone">Phone</label>
+        <input type="tel" name="phone" id="phone" placeholder="01XXXXXXXXX" required>
+        
+        <label for="address">Address</label>
+        <textarea name="address" id="address" rows="3" placeholder="Street, City, Zip" required></textarea>
+
+        <div class="summary">
+          <h2>Order Summary</h2>
+          {% for item in cart %}
+          <div>
+            <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+            <span>৳ {{ item.total_price }}</span>
+          </div>
+          {% endfor %}
+          
+          <div class="total">
+            <span>Total</span>
+            <span id="totalPrice">৳ {{ cart.get_total_price }}</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn">Confirm & Pay with SSLCommerz</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

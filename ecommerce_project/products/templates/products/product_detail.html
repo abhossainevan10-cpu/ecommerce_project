@@ -1,191 +1,140 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>{{ product.name }}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    :root{
-      --primary:#2563eb;
-      --success:#22c55e;
-      --warning:#f97316;
-      --muted:#6b7280;
-      --border:#e5e7eb;
-      --bg:#f8fafc;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto;
-      background:var(--bg);
-      color:#111827;
-    }
-    .container{
-      max-width:1200px;
-      margin:40px auto;
-      padding:20px;
-      background:#fff;
-      border-radius:12px;
-      box-shadow:0 10px 30px rgba(0,0,0,.06);
-    }
-    .grid{
-      display:grid;
-      grid-template-columns:1.2fr 1fr;
-      gap:30px;
-    }
-    /* Left */
-    .main-image{
-      border:1px solid var(--border);
-      border-radius:12px;
-      padding:20px;
-      text-align:center;
-    }
-    .main-image img{
-      max-width:100%;
-      height:auto;
-    }
-    .thumbs{
-      display:flex;
-      gap:10px;
-      margin-top:15px;
-    }
-    .thumbs img{
-      width:70px;
-      border:1px solid var(--border);
-      border-radius:8px;
-      cursor:pointer;
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --primary: #2563eb;
+        --success: #22c55e;
+        --warning: #f97316;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --bg: #f8fafc;
     }
 
-    /* Right */
-    h1{margin:0 0 10px}
-    .price{
-      font-size:26px;
-      font-weight:700;
-      color:var(--primary);
+    .detail-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
     }
-    .old-price{
-      color:#9ca3af;
-      text-decoration:line-through;
-      margin-right:10px;
-      font-size:18px;
-    }
-    .save{
-      color:#ef4444;
-      font-size:14px;
-      margin-top:5px;
-    }
-    .meta{
-      margin:15px 0;
-      font-size:14px;
-      color:var(--muted);
-      line-height:1.7;
-    }
-    .badges span{
-      display:inline-block;
-      padding:5px 10px;
-      border-radius:6px;
-      font-size:12px;
-      font-weight:600;
-      margin-right:6px;
-    }
-    .available{background:#dcfce7;color:#166534}
-    .unofficial{background:#ffedd5;color:#9a3412}
 
-    .specs{
-      margin-top:20px;
-      border-top:1px solid var(--border);
-      padding-top:15px;
+    .grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 30px;
     }
-    .spec{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      margin-bottom:12px;
-    }
-    .spec strong{width:120px}
 
-    .actions{
-      margin-top:25px;
-      display:flex;
-      gap:15px;
+    .main-image {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
     }
-    .btn{
-      flex:1;
-      padding:14px;
-      border:none;
-      border-radius:8px;
-      font-size:15px;
-      cursor:pointer;
+
+    .main-image img {
+        max-width: 100%;
+        height: 400px;
+        object-fit: contain;
     }
-    .btn-cart{background:var(--primary);color:#fff}
-    .btn-buy{background:var(--success);color:#fff}
 
-    @media(max-width:900px){
-      .grid{grid-template-columns:1fr}
+    h1 { margin: 0 0 10px; font-size: 28px; color: #1e293b; }
+    
+    .price {
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--primary);
     }
-  </style>
-</head>
-<body>
 
-<div class="container">
-  <div class="grid">
+    .meta {
+        margin: 20px 0;
+        font-size: 15px;
+        color: var(--muted);
+        line-height: 1.8;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 15px;
+    }
 
-    <!-- LEFT SIDE -->
-    <div>
-      <div class="main-image">
-        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-      </div>
-      <div class="thumbs">
-        {% for img in product.images.all %}
-          <img src="{{ img.image.url }}" alt="">
-        {% endfor %}
-      </div>
+    .specs {
+        margin-top: 25px;
+        background: #f9fafb;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .spec {
+        display: flex;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .spec strong { width: 120px; color: #475569; }
+
+    .actions {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 16px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .btn-cart { background: var(--primary); color: #fff; }
+    .btn-buy { background: var(--success); color: #fff; }
+
+    @media (max-width: 900px) {
+        .grid { grid-template-columns: 1fr; }
+        .main-image img { height: auto; }
+    }
+</style>
+
+<div class="detail-container">
+    <div class="grid">
+        <div>
+            <div class="main-image">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <h1>{{ product.name }}</h1>
+            <div class="price">৳{{ product.price }}</div>
+
+            <div class="meta">
+                Brand: <strong>{{ product.brand }}</strong><br>
+                Category: {{ product.category }}
+            </div>
+
+            <div class="specs">
+                <h3 style="margin-top:0; font-size:16px;">Key Specifications</h3>
+                <div class="spec"><strong>Display</strong> {{ product.display|default:"N/A" }}</div>
+                <div class="spec"><strong>RAM/ROM</strong> {{ product.ram|default:"N/A" }}</div>
+                <div class="spec"><strong>Camera</strong> {{ product.camera|default:"N/A" }}</div>
+                <div class="spec"><strong>Battery</strong> {{ product.battery|default:"N/A" }}</div>
+                <div class="spec"><strong>OS</strong> {{ product.os|default:"N/A" }}</div>
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'cart_add' product.id %}" class="btn btn-cart">Add to Cart</a>
+                <a href="{% url 'cart_add' product.id %}" class="btn btn-buy">Buy Now</a>
+            </div>
+        </div>
     </div>
-
-    <!-- RIGHT SIDE -->
-    <div>
-      <h1>{{ product.name }}</h1>
-
-      <div>
-        <span class="old-price">৳{{ product.old_price }}</span>
-        <span class="price">৳{{ product.price }}</span>
-        <div class="save">You Save: ৳{{ product.old_price|floatformat:0|add:-product.price }}</div>
-      </div>
-
-      <div class="meta">
-        Brand: <strong>{{ product.brand }}</strong><br>
-        Category: {{ product.category }}<br>
-        Added on: {{ product.created_at|date:"d M, Y" }}<br>
-        Last updated: {{ product.updated_at|date:"d M, Y" }}
-      </div>
-
-      <div class="badges">
-        <span class="available">AVAILABLE</span>
-        <span class="unofficial">UNOFFICIAL</span>
-      </div>
-
-      <div class="specs">
-        <div class="spec"><strong>Release</strong> {{ product.release_date }}</div>
-        <div class="spec"><strong>OS</strong> {{ product.os }}</div>
-        <div class="spec"><strong>Display</strong> {{ product.display }}</div>
-        <div class="spec"><strong>Camera</strong> {{ product.camera }}</div>
-        <div class="spec"><strong>RAM</strong> {{ product.ram }}</div>
-        <div class="spec"><strong>Battery</strong> {{ product.battery }}</div>
-      </div>
-
-      <div class="actions">
-        <form method="post" action="{% url 'add_to_cart' product.id %}">
-          {% csrf_token %}
-          <button class="btn btn-cart">Add to Cart</button>
-        </form>
-        <button class="btn btn-buy">Buy Now</button>
-      </div>
-
-    </div>
-  </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

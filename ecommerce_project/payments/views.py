@@ -1,56 +1,123 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from uuid import uuid4
-
 from .sslcommerz import SSLCommerz
+from cart.cart import Cart
+from django.views.decorators.csrf import csrf_exempt
+from orders.models import Order, OrderItem
+from django.core.mail import send_mail
+from django.conf import settings
 
+def checkout(request):
+    cart = Cart(request)
+    return render(request, 'payments/checkout.html', {'cart': cart})
 
 def start_payment(request):
-    """
-    Start SSLCommerz payment
-    """
-    # 1️⃣ Unique transaction ID
-    tran_id = str(uuid4())
+    if request.method == 'POST':
+        cart = Cart(request)
+        total_amount = cart.get_total_price()
+        
+        if total_amount <= 0:
+            return HttpResponse("আপনার কার্ট খালি!")
 
-    # 2️⃣ SSLCommerz object
-    ssl = SSLCommerz()
+        # ১. ইউনিক ট্রানজেকশন আইডি তৈরি
+        tran_id = str(uuid4())[:10]
+        
+        # ২. ডাটাবেসে অর্ডার অবজেক্ট তৈরি করা
+        order = Order.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            transaction_id=tran_id,
+            total_amount=total_amount,
+            paid=False
+        )
 
-    # 3️⃣ Create payment session
-    response = ssl.initiate(
-        amount='1.00',
-        tran_id=tran_id,
-        success_url=request.build_absolute_uri('/payments/success/'),
-        fail_url=request.build_absolute_uri('/payments/fail/'),
-        cancel_url=request.build_absolute_uri('/payments/cancel/')
-    )
+        # ৩. কার্টের আইটেমগুলো OrderItem মডেলে সেভ করা
+        for item in cart:
+            OrderItem.objects.create(
+                order=order,
+                product=item['product'],
+                price=item['price'],
+                quantity=item['quantity']
+            )
+        
+        # SSLCommerz এর জন্য কাস্টমার ডাটা
+        customer_name = f"{request.POST.get('first_name', '')} {request.POST.get('last_name', '')}"
+        
+        ssl = SSLCommerz()
+        response = ssl.initiate(
+            total_amount=str(total_amount),
+            tran_id=tran_id,
+            success_url=request.build_absolute_uri('/payments/success/'),
+            fail_url=request.build_absolute_uri('/payments/fail/'),
+            cancel_url=request.build_absolute_uri('/payments/cancel/'),
+            cus_name=customer_name,
+            cus_email=request.POST.get('email', 'test@test.com'),
+            cus_phone=request.POST.get('phone', '01700000000'),
+            cus_add1=request.POST.get('address', 'Dhaka'),
+            cus_city=request.POST.get('city', 'Dhaka'),
+            cus_country='Bangladesh',
+            product_category='Ecommerce Items',
+            product_name='Order Products',
+            shipping_method='NO',
+            num_of_item=len(cart),
+            product_profile='general'
+        )
+        
+        if response.get('status') == 'SUCCESS' and response.get('GatewayPageURL'):
+            return redirect(response['GatewayPageURL'])
+        else:
+            return HttpResponse(f"পেমেন্ট গেটওয়েতে সমস্যা: {response.get('failedreason')}")
+    
+    return redirect('checkout')
 
-    # 4️⃣ Redirect to gateway (recommended)
-    if response.get('GatewayPageURL'):
-        return redirect(response['GatewayPageURL'])
-
-    # 5️⃣ Fallback (if gateway url missing)
-    return render(
-        request,
-        'payments/payment_started.html',
-        {'response': response}
-    )
-
-
+@csrf_exempt
 def payment_success(request):
-    """
-    Payment success page
-    """
-    return render(request, 'payments/payment_success.html')
+    if request.method == 'POST':
+        tran_id = request.POST.get('tran_id')
+        
+        try:
+            # ১. ডাটাবেসে অর্ডার খুঁজে পাওয়া এবং পেইড স্ট্যাটাস আপডেট করা
+            order = Order.objects.get(transaction_id=tran_id)
+            order.paid = True
+            order.save()
 
+            # ২. ইমেইল পাঠানোর লজিক (এখানেই বসবে)
+            subject = f"New Order Alert - #{order.id}"
+            message = f"""
+            New Order Received!
+            Order ID: #{order.id}
+            Transaction ID: {order.transaction_id}
+            User: {order.user.username if order.user else 'Guest'}
+            Total: Tk {order.total_amount}
+            Payment Method: SSLCOMMERZ
+            """
+            # আপনার যে জিমেইলে নোটিফিকেশন পেতে চান সেটি এখানে দিন
+            admin_email = 'abhossainevan10@gmail.com' 
+            
+            # Django-র send_mail ফাংশন কল করা
+            send_mail(
+                subject, 
+                message, 
+                settings.EMAIL_HOST_USER, 
+                [admin_email], 
+                fail_silently=False
+            )
 
+            # ৩. কার্ট খালি করা
+            cart = Cart(request)
+            cart.clear()
+
+            return render(request, 'payments/payment_success.html', {'order': order})
+            
+        except Order.DoesNotExist:
+            return HttpResponse("Order Not Found")
+            
+    return redirect('home')
+
+@csrf_exempt
 def payment_fail(request):
-    """
-    Payment failed page
-    """
     return render(request, 'payments/payment_fail.html')
 
-
+@csrf_exempt
 def payment_cancel(request):
-    """
-    Payment cancelled page
-    """
     return render(request, 'payments/payment_cancel.html')

@@ -1,32 +1,28 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from .models import Product
+from .serializers import ProductSerializer
+from cart.cart import Cart  # এই লাইনটি যোগ করুন
 
+# ১. সাধারণ ইউজারদের জন্য (HTML View)
 def product_list(request):
-    # URL থেকে ?category=Samsung এর মান নেওয়া
-    brand_name = request.GET.get('category')
-
-    # সবার আগে সব প্রোডাক্ট নেওয়া
     products = Product.objects.all()
+    cart = Cart(request)  # কার্ট অবজেক্টটি তৈরি করুন
+    # 'cart' কে ডিকশনারিতে পাস করুন যেন টেমপ্লেটে {{ cart|length }} কাজ করে
+    return render(request, 'products/product_list.html', {
+        'products': products, 
+        'cart': cart
+    })
 
-    # যদি ব্র্যান্ড থাকে → ফিল্টার করো
-    if brand_name:
-        products = products.filter(brand=brand_name)
+# ২. অ্যাডমিন বা ডেটার জন্য (API View)
+@api_view(['GET'])
+def product_list_api(request):
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
 
-    return render(request, 'products/product_list.html', {'products': products})
-
-
-def product_detail(request, pk):
-    product = Product.objects.get(id=pk)
-    return render(request, 'product_detail.html', {'product': product})
-
-
-from django.shortcuts import render, get_object_or_404
-from .models import Product
-
-
-
-
-
-
-
-
+def product_detail(request, id):
+    # আইডি অনুযায়ী প্রোডাক্ট খুঁজে বের করা, না পেলে ৪-০-৪ এরর দিবে
+    product = get_object_or_404(Product, id=id)
+    return render(request, 'products/product_detail.html', {'product': product})

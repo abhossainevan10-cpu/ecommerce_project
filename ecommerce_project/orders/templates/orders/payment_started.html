@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payment Started</title>
+
     <style>
         body {
             margin: 0;
@@ -70,20 +71,30 @@
 </head>
 <body>
 
-    <div class="container">
-        <img class="icon" src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png" alt="Payment Icon" />
+<div class="container">
+    <img class="icon"
+         src="https://cdn-icons-png.flaticon.com/512/3209/3209265.png"
+         alt="Payment Icon" />
 
-        <h1>Payment Process Started</h1>
-        <p>Your payment is now being processed securely.<br>
-           Please wait a moment while we confirm the transaction.</p>
+    <h1>Payment Process Started</h1>
 
-        <div class="loading-bar">
-            <div class="loading-fill"></div>
-        </div>
+    <p>
+        Order ID: <strong>#{{ order.id }}</strong><br><br>
+        Your payment is now being processed securely.<br>
+        Please wait a moment while we confirm the transaction.
+    </p>
 
-        <p>If the page doesn't update automatically,<br>click the button below.</p>
-        <a href="success.html" class="btn">Go to Payment Success</a>
+    <div class="loading-bar">
+        <div class="loading-fill"></div>
     </div>
+
+    <p>If the page doesn't update automatically,<br>click the button below.</p>
+
+    <!-- Django URL (CORRECT) -->
+    <a href="{% url 'payment_success' order.id %}" class="btn">
+        Go to Payment Success
+    </a>
+</div>
 
 </body>
 </html>
