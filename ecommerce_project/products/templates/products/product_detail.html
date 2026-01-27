@@ -1,140 +1,144 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ product.name }}{% endblock %}
-
 {% block content %}
 <style>
-    :root {
-        --primary: #2563eb;
-        --success: #22c55e;
-        --warning: #f97316;
-        --muted: #6b7280;
-        --border: #e5e7eb;
-        --bg: #f8fafc;
-    }
-
-    .detail-container {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 20px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        gap: 30px;
-    }
-
-    .main-image {
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-    }
-
-    .main-image img {
-        max-width: 100%;
-        height: 400px;
-        object-fit: contain;
-    }
-
-    h1 { margin: 0 0 10px; font-size: 28px; color: #1e293b; }
     
-    .price {
-        font-size: 30px;
-        font-weight: 700;
-        color: var(--primary);
+    .detail-container { max-width: 1200px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .product-main { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    
+    .image-gallery { position: relative; overflow: hidden; border-radius: 15px; background: #f9f9f9; cursor: crosshair; height: fit-content; }
+    .image-gallery img { width: 100%; transition: transform 0.3s ease-out; transform-origin: center center; }
+    .image-gallery:hover img { transform: scale(1.8); }
+
+    .product-info h1 { font-size: 28px; color: #333; margin-bottom: 5px; }
+    .meta-info { display: flex; gap: 20px; color: #666; font-size: 14px; margin-bottom: 15px; }
+    .stock-status { color: #2e7d32; font-weight: bold; }
+    
+    .price-tag { font-size: 28px; color: #0ea5a4; font-weight: bold; margin: 10px 0; }
+    .old-price { font-size: 18px; color: #999; text-decoration: line-through; margin-left: 10px; font-weight: normal; }
+
+    .option-group { margin: 20px 0; }
+    .option-title { font-weight: 600; margin-bottom: 10px; display: block; color: #444; }
+    .option-list { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .option-item { position: relative; }
+    .option-item input { position: absolute; opacity: 0; cursor: pointer; }
+    .option-label { 
+        display: inline-block; padding: 8px 18px; border: 1px solid #ddd; border-radius: 20px; 
+        cursor: pointer; font-size: 14px; transition: 0.3s; background: #fff;
     }
+    .option-item input:checked + .option-label { border-color: #f57c00; color: #f57c00; background: #fff9f5; font-weight: bold; }
 
-    .meta {
-        margin: 20px 0;
-        font-size: 15px;
-        color: var(--muted);
-        line-height: 1.8;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 15px;
-    }
+    .warranty-text { background: #f8f9fa; padding: 10px 15px; border-radius: 8px; color: #555; font-size: 14px; border-left: 4px solid #f57c00; margin: 20px 0; }
 
-    .specs {
-        margin-top: 25px;
-        background: #f9fafb;
-        padding: 20px;
-        border-radius: 10px;
-    }
+    .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+    .btn-buy { background: #f57c00; color: #fff; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; border: none; cursor: pointer; font-size: 16px; }
+    .btn-cart { border: 1px solid #ddd; background: #fff; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; color: #333; cursor: pointer; font-size: 16px; }
+    .btn-wa { background: #e8f5e9; color: #2e7d32; padding: 12px; border-radius: 10px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; text-decoration: none; font-weight: 600; }
 
-    .spec {
-        display: flex;
-        margin-bottom: 10px;
-        font-size: 14px;
-    }
-
-    .spec strong { width: 120px; color: #475569; }
-
-    .actions {
-        margin-top: 30px;
-        display: flex;
-        gap: 15px;
-    }
-
-    .btn {
-        flex: 1;
-        padding: 16px;
-        border: none;
-        border-radius: 10px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-        transition: 0.3s;
-    }
-
-    .btn-cart { background: var(--primary); color: #fff; }
-    .btn-buy { background: var(--success); color: #fff; }
-
-    @media (max-width: 900px) {
-        .grid { grid-template-columns: 1fr; }
-        .main-image img { height: auto; }
-    }
+    @media (max-width: 768px) { .product-main { grid-template-columns: 1fr; } }
 </style>
 
 <div class="detail-container">
-    <div class="grid">
-        <div>
-            <div class="main-image">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% endif %}
-            </div>
+    <div class="product-main">
+        <div class="image-gallery" id="zoom-container">
+            <img src="{{ product.image.url }}" id="main-img" alt="{{ product.name }}">
         </div>
 
-        <div>
+        <div class="product-info">
             <h1>{{ product.name }}</h1>
-            <div class="price">৳{{ product.price }}</div>
-
-            <div class="meta">
-                Brand: <strong>{{ product.brand }}</strong><br>
-                Category: {{ product.category }}
+            
+            <div class="meta-info">
+                <span>Availability: <span class="stock-status">In Stock</span></span>
+                <span>Code: <strong>AOL{{ product.id }}</strong></span>
+            </div>
+            
+            <div class="price-tag">
+                ৳ {{ product.price }} 
+                {% if product.old_price %}
+                <span class="old-price">৳ {{ product.old_price }}</span>
+                {% endif %}
             </div>
 
-            <div class="specs">
-                <h3 style="margin-top:0; font-size:16px;">Key Specifications</h3>
-                <div class="spec"><strong>Display</strong> {{ product.display|default:"N/A" }}</div>
-                <div class="spec"><strong>RAM/ROM</strong> {{ product.ram|default:"N/A" }}</div>
-                <div class="spec"><strong>Camera</strong> {{ product.camera|default:"N/A" }}</div>
-                <div class="spec"><strong>Battery</strong> {{ product.battery|default:"N/A" }}</div>
-                <div class="spec"><strong>OS</strong> {{ product.os|default:"N/A" }}</div>
-            </div>
+            <form action="{% url 'cart_add' product.id %}" method="post">
+                {% csrf_token %}
 
-            <div class="actions">
-                <a href="{% url 'cart_add' product.id %}" class="btn btn-cart">Add to Cart</a>
-                <a href="{% url 'cart_add' product.id %}" class="btn btn-buy">Buy Now</a>
-            </div>
+                {% if product.ram %}
+                <div class="option-group">
+                    <span class="option-title">RAM:</span>
+                    <div class="option-list">
+                        {% for r in product.ram.split %}
+                        <label class="option-item">
+                            <input type="radio" name="ram" value="{{ r }}" {% if forloop.first %}checked{% endif %}>
+                            <span class="option-label">{{ r }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if product.color %}
+                <div class="option-group">
+                    <span class="option-title">Color:</span>
+                    <div class="option-list">
+                        {% for c in product.color.split %}
+                        <label class="option-item">
+                            <input type="radio" name="color" value="{{ c }}" {% if forloop.first %}checked{% endif %}>
+                            <span class="option-label">{{ c }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if product.storage %}
+                <div class="option-group">
+                    <span class="option-title">Storage:</span>
+                    <div class="option-list">
+                        {% for s in product.storage.split %}
+                        <label class="option-item">
+                            <input type="radio" name="storage" value="{{ s }}" {% if forloop.first %}checked{% endif %}>
+                            <span class="option-label">{{ s }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="warranty-text">
+                    <strong>1 Year Official Warranty Support</strong> Except USA Variant
+                </div>
+
+                <div class="action-btns">
+                    <button type="submit" class="btn-buy">Shop Now</button>
+                    <button type="submit" class="btn-cart">🛒 Add to Cart</button>
+                </div>
+            </form>
+            
+            <a href="https://wa.me/8801880528312?text=I%20want%20to%20buy%20{{ product.name|urlencode }}" target="_blank" class="btn-wa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="20" height="20">
+                Order via WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <div class="description-box">
+        <h2 style="border-bottom: 2px solid #0ea5a4; display: inline-block; padding-bottom: 5px; margin-bottom: 20px;">Product Description</h2>
+        <div class="desc-content" style="line-height: 1.8; color: #555;">
+            {{ product.description|safe }}
         </div>
     </div>
 </div>
+
+<script>
+    const container = document.getElementById('zoom-container');
+    const img = document.getElementById('main-img');
+    container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / container.offsetWidth) * 100;
+        const y = ((e.clientY - rect.top) / container.offsetHeight) * 100;
+        img.style.transformOrigin = `${x}% ${y}%`;
+    });
+</script>
 {% endblock %}

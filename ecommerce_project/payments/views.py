@@ -76,12 +76,12 @@ def payment_success(request):
         tran_id = request.POST.get('tran_id')
         
         try:
-            # ১. ডাটাবেসে অর্ডার খুঁজে পাওয়া এবং পেইড স্ট্যাটাস আপডেট করা
+            
             order = Order.objects.get(transaction_id=tran_id)
             order.paid = True
             order.save()
 
-            # ২. ইমেইল পাঠানোর লজিক (এখানেই বসবে)
+            
             subject = f"New Order Alert - #{order.id}"
             message = f"""
             New Order Received!
@@ -91,10 +91,10 @@ def payment_success(request):
             Total: Tk {order.total_amount}
             Payment Method: SSLCOMMERZ
             """
-            # আপনার যে জিমেইলে নোটিফিকেশন পেতে চান সেটি এখানে দিন
+            
             admin_email = 'abhossainevan10@gmail.com' 
             
-            # Django-র send_mail ফাংশন কল করা
+           
             send_mail(
                 subject, 
                 message, 
@@ -103,7 +103,7 @@ def payment_success(request):
                 fail_silently=False
             )
 
-            # ৩. কার্ট খালি করা
+           
             cart = Cart(request)
             cart.clear()
 

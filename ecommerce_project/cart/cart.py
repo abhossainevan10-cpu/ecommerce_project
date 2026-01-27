@@ -13,7 +13,7 @@ class Cart:
     def add(self, product, quantity=1, override_quantity=False):
         pid = str(product.id)
         if pid not in self.cart:
-            # দামটিকে স্ট্রিং হিসেবে রাখা হয়েছে যেন JSON সিরিয়ালাইজ করা যায়
+          
             self.cart[pid] = {'quantity': 0, 'price': str(product.price)}
         
         if override_quantity:
@@ -23,7 +23,7 @@ class Cart:
         self.save()
 
     def save(self):
-        # সেশন মডিফাইড ফ্ল্যাগ ট্রু করা যেন ডাটাবেসে সেভ হয়
+       
         self.session.modified = True
 
     def remove(self, product):
@@ -36,14 +36,14 @@ class Cart:
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
         
-        # মূল কার্ট ডাটা কপি করা হচ্ছে যেন সেশন অবজেক্ট মডিফাই না হয়
+       
         cart = self.cart.copy()
         
         for product in products:
             cart[str(product.id)]['product'] = product
 
         for item in cart.values():
-            # ডেসিমাল কনভার্ট শুধু লুপ বা টেমপ্লেটে দেখানোর জন্য
+          
             item['price'] = Decimal(item['price'])
             item['total_price'] = item['price'] * item['quantity']
             yield item

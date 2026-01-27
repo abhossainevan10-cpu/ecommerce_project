@@ -5,7 +5,7 @@ from products.models import Product
 def cart_add(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
-    cart.add(product=product) # এটিই ডাটাবেস থেকে কার্টে আইটেম যোগ করে
+    cart.add(product=product) 
     return redirect('cart_detail')
 
 
@@ -14,7 +14,7 @@ def cart_remove(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
     
-    # কার্ট থেকে প্রোডাক্ট রিমুভ করা হচ্ছে
+    
     cart.remove(product)
     
     return redirect('cart_detail')
@@ -28,7 +28,7 @@ def cart_update(request, product_id):
     """প্রয়োজন হলে প্রোডাক্টের পরিমাণ কমানো বা বাড়ানোর জন্য এটি ব্যবহার করতে পারেন"""
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
-    # এখানে লজিক অনুযায়ী quantity আপডেট করা যায়
+    
     return redirect('cart_detail')
 
 

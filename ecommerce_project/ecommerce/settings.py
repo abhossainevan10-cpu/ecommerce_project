@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key')
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG=True
 
 ALLOWED_HOSTS = [os.getenv('RENDER_EXTERNAL_HOSTNAME', '*')]
 
@@ -97,6 +97,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'abhossainevan10@gmail.com'  # আপনার জিমেইল
-EMAIL_HOST_PASSWORD = 'lmmw kyph bufx najq' # জিমেইল অ্যাপ পাসওয়ার্ড
+EMAIL_HOST_USER = 'abhossainevan10@gmail.com' 
+EMAIL_HOST_PASSWORD = 'lmmw kyph bufx najq' 
 STATIC_ROOT = BASE_DIR / 'staticfiles'

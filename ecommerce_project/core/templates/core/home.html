@@ -1,118 +1,175 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ES Mobile Shop - Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { background-color: #f6f7fb; color: #333; line-height: 1.6; }
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ES gadgets home{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<style>
+    body { margin: 0; padding: 0; overflow-x: hidden; background: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+    .home-full-page { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .content-area { width: 100%; max-width: 1400px; padding: 20px; box-sizing: border-box; }
+
+    
+    .hero-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 15px; margin-bottom: 25px; }
+    
+    .slider-box { background: #000; border-radius: 15px; height: 450px; overflow: hidden; position: relative; }
+    .swiper { width: 100%; height: 100%; }
+    .swiper-slide img { width: 100%; height: 100%; object-fit: cover; transition: transform 5s ease; }
+    .swiper-slide-active img { transform: scale(1.1); } 
+
+    .side-box { display: flex; flex-direction: column; gap: 15px; }
+    .mini-card { background: #eee; border-radius: 15px; flex: 1; overflow: hidden; transition: 0.3s; }
+    .mini-card:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .mini-card img { width: 100%; height: 100%; object-fit: cover; }
+
+    
+    .service-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+    .service-btn { 
+        background: white; padding: 15px; border-radius: 12px; border: 1px solid #eee; 
+        display: flex; align-items: center; justify-content: center; gap: 10px; 
+        font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.3s; 
+        text-decoration: none; color: #333; 
+    }
+    .service-btn:hover { background: #f0fdfa; border-color: #0ea5a4; color: #0ea5a4; transform: translateY(-3px); }
+
+    .scrolling-notice { background: #0ea5a4; color: white; padding: 10px; border-radius: 8px; margin-bottom: 30px; font-weight: 500; }
+
+    .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .cat-link { text-decoration: none; text-align: center; color: #444; }
+    .cat-icon-circle { 
+        width: 80px; height: 80px; background: white; border-radius: 50%; 
+        display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; 
+        font-size: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; 
+    }
+    .cat-link:hover .cat-icon-circle { background: #0ea5a4; color: white; transform: rotate(10deg); }
+
+    
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+    .p-card { 
+        background: white; border-radius: 20px; padding: 15px; border: 1px solid #f0f0f0; 
+        transition: 0.4s; text-align: center; text-decoration: none; color: inherit; display: block; 
+    }
+    .p-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
+    
+    .wa-btn { 
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        margin-top: 15px; background: #25D366; color: white; padding: 12px; 
+        border-radius: 10px; font-weight: bold; transition: 0.3s;
+    }
+    .wa-btn:hover { background: #128C7E; }
+
+    @media (max-width: 768px) {
+        .hero-grid { grid-template-columns: 1fr; }
+        .slider-box { height: 250px; }
+        .service-row { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+
+<div class="home-full-page">
+    <div class="content-area">
         
-        /* Navigation */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        nav .logo { font-size: 24px; font-weight: 700; color: #0ea5a4; text-decoration: none; }
-        nav ul { display: flex; list-style: none; gap: 25px; align-items: center; }
-        nav ul li a { text-decoration: none; color: #444; font-weight: 500; transition: 0.3s; }
-        nav ul li a:hover { color: #0ea5a4; }
-        
-        /* Cart Badge Style */
-        .cart-badge { background: #ff4d4d; color: white; padding: 2px 8px; border-radius: 50%; font-size: 12px; margin-left: 5px; }
-
-        /* Hero Section */
-        .hero { background: linear-gradient(135deg, #0ea5a4, #028e8e); color: #fff; text-align: center; padding: 100px 20px; }
-        .hero h1 { font-size: 42px; margin-bottom: 10px; }
-        .hero p { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
-        .cta-btn { background: white; padding: 12px 30px; color: #0ea5a4; text-decoration: none; border-radius: 50px; font-weight: bold; transition: 0.3s; }
-        .cta-btn:hover { background: #f0f0f0; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-
-        /* Featured Section */
-        .featured { max-width: 1200px; margin: 0 auto; padding: 60px 20px; text-align: center; }
-        .featured h2 { font-size: 32px; margin-bottom: 40px; color: #222; position: relative; padding-bottom: 10px; }
-        .featured h2::after { content: ''; width: 60px; height: 4px; background: #0ea5a4; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
-
-        /* Product Grid */
-        .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; }
-        .product-card { background-color: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; border: 1px solid #eee; }
-        .product-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .product-card img { width: 100%; height: 220px; object-fit: contain; border-radius: 10px; margin-bottom: 15px; }
-        .product-card h3 { font-size: 18px; margin-bottom: 10px; color: #333; }
-        .product-card .price { font-size: 20px; font-weight: 700; color: #0ea5a4; margin-bottom: 15px; }
-        
-        .buy-btn { display: block; width: 100%; padding: 12px; border: none; background-color: #0ea5a4; color: #fff; border-radius: 8px; cursor: pointer; text-decoration: none; text-align: center; font-weight: bold; transition: 0.3s; }
-        .buy-btn:hover { background-color: #028e8e; }
-
-        /* Footer */
-        footer { background-color: #222; color: #bbb; padding: 60px 50px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
-        footer h4 { color: #fff; margin-bottom: 20px; font-size: 20px; }
-        footer p { font-size: 14px; margin-bottom: 10px; }
-        .footer-bottom { grid-column: 1/-1; text-align: center; border-top: 1px solid #444; padding-top: 20px; margin-top: 20px; }
-    </style>
-</head>
-<body>
-<nav>
-    <a href="{% url 'product_list' %}" class="logo">ES Mobile Shop</a>
-    <ul>
-        <li><a href="{% url 'product_list' %}">Home</a></li>
-        <li><a href="{% url 'product_list' %}">Products</a></li>
-        <li>
-            <a href="{% url 'cart_detail' %}">
-                Cart <span class="cart-badge">{{ cart|length }}</span>
-            </a>
-        </li>
-        {% if user.is_authenticated %}
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        {% else %}
-            <li><a href="{% url 'login' %}">Log In</a></li>
-        {% endif %}
-    </ul>
-</nav>
-
-    <section class="hero">
-        <h1>Latest Smartphones, Best Prices</h1>
-        <p>100% Genuine Products with Official Warranty</p>
-        <a href="/products/" class="cta-btn">Explore Models</a>
-    </section>
-
-    <section class="featured">
-        <h2>Featured Products</h2>
-        <div class="products">
-            {% for p in products %}
-            <div class="product-card">
-                {% if p.image %}
-                    <img src="{{ p.image.url }}" alt="{{ p.name }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/220" alt="No Image">
-                {% endif %}
-                
-                <h3>{{ p.name }}</h3>
-                <p class="price">৳ {{ p.price }}</p>
-                
-                <a href="{% url 'cart_add' p.id %}" class="buy-btn">Add to Cart</a>
+        <div class="hero-grid">
+            <div class="slider-box">
+                <div class="swiper mainSwiper">
+                    <div class="swiper-wrapper">
+                        {% if main_slider %}
+                        <div class="swiper-slide"><img src="{{ main_slider.image.url }}" alt="Main"></div>
+                        {% endif %}
+                        {% if side_1 %}
+                        <div class="swiper-slide"><img src="{{ side_1.image.url }}" alt="Slide 2"></div>
+                        {% endif %}
+                        {% if side_2 %}
+                        <div class="swiper-slide"><img src="{{ side_2.image.url }}" alt="Slide 3"></div>
+                        {% endif %}
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
             </div>
-            {% empty %}
-            <div style="grid-column: 1/-1;">
-                <p>No products available right now. Check back later!</p>
+            <div class="side-box">
+                <div class="mini-card">
+                    {% if side_1 %}<img src="{{ side_1.image.url }}" alt="Side 1">{% endif %}
+                </div>
+                <div class="mini-card">
+                    {% if side_2 %}<img src="{{ side_2.image.url }}" alt="Side 2">{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="service-row">
+            <a href="#" class="service-btn">🚚 Fastest Delivery</a>
+            <a href="#" class="service-btn">💳 36 Months EMI</a>
+            <a href="#" class="service-btn">🔄 Exchange Facility</a>
+            <a href="#" class="service-btn">🛠️ After Sell Service</a>
+        </div>
+
+        <div class="scrolling-notice">
+            <marquee behavior="scroll" direction="left">📢 আজ আমাদের সকল আউটলেট যথারীতি খোলা আছে। ES gadgets-এর সাথেই থাকুন!</marquee>
+        </div>
+
+        <div class="cat-grid">
+            {% for cat in categories %}
+            <a href="?category={{ cat.slug }}" class="cat-link">
+                <div class="cat-icon-circle">
+                    {% if cat.name|lower == 'mobile' %}📱
+                    {% elif cat.name|lower == 'laptop' %}💻
+                    {% elif cat.name|lower == 'airpods' %}🎧
+                    {% elif cat.name|lower == 'watch' %}⌚
+                    {% elif cat.name|lower == 'camera' %}📷
+                    {% else %}🔌{% endif %}
+                </div>
+                <p>{{ cat.name }}</p>
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if query %}
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #444;">Showing results for: "<span style="color: #0ea5a4;">{{ query }}</span>"</h3>
+                {% if not products %}
+                    <p style="color: #ff6b6b; font-weight: bold;">❌ No products found. Try a different name.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
+            <h2 style="font-size:24px; font-weight:700;">{% if query %}Search Results{% else %}New <span>Trends</span>{% endif %}</h2>
+            <a href="{% url 'product_list' %}" style="color:#0ea5a4; text-decoration:none; font-weight:600;">View All →</a>
+        </div>
+        
+        <div class="product-grid">
+            {% for p in products %}
+            <div class="p-card">
+                <a href="{% url 'product_detail' p.id %}" style="text-decoration: none; color: inherit;">
+                    {% if p.image %}
+                        <img src="{{ p.image.url }}" alt="{{ p.name }}" style="width:100%; height:200px; object-fit:contain;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/200" alt="No image" style="width:100%; height:200px; object-fit:contain;">
+                    {% endif %}
+                    <h4 style="margin:15px 0 5px; font-size:17px; height: 45px; overflow: hidden;">{{ p.name }}</h4>
+                    <div style="color:#0ea5a4; font-weight:800; font-size:22px; margin-bottom: 10px;">৳ {{ p.price }}</div>
+                </a>
+                
+                <a href="https://wa.me/8801880528312?text=Hello%20ES%20gadgets,%20I%20want%20to%20buy%20{{ p.name|urlencode }}.%20Price:%20৳{{ p.price }}" 
+                   target="_blank" class="wa-btn">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="20" height="20">
+                    Buy Now
+                </a>
             </div>
             {% endfor %}
         </div>
-    </section>
+    </div>
+</div>
 
-    <footer>
-        <div class="footer-column">
-            <h4>About ES Shop</h4>
-            <p>Your trusted partner for the latest mobile technology in Bangladesh. Quality and service are our priorities.</p>
-        </div>
-        <div class="footer-column">
-            <h4>Contact Info</h4>
-            <p>📍 Joypurhat, Rajshahi Division</p>
-            <p>📞 +8801880528312</p>
-            <p>✉️ support@esmobileshop.com</p>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 ES Mobile Shop. Developed with ❤️ in Joypurhat.</p>
-        </div>
-    </footer>
-
-</body>
-</html>
+<script>
+  var swiper = new Swiper(".mainSwiper", {
+    loop: true,
+    autoplay: { delay: 4000, disableOnInteraction: false },
+    pagination: { el: ".swiper-pagination", clickable: true },
+    effect: "fade",
+  });
+</script>
+{% endblock %}
