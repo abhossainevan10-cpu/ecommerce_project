@@ -10,6 +10,7 @@ from django.conf import settings
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 import io
+import random
 
 
 # --- ১. PDF জেনারেট করার ফাংশন ---
