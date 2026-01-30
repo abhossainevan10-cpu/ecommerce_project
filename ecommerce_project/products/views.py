@@ -14,37 +14,41 @@ def home(request):
     query = request.GET.get('search')
     category_slug = request.GET.get('category')
     
-    # প্রাথমিক কুয়েরিসেট
+    # প্রাথমিক কুয়েরিসেট (নতুন প্রোডাক্ট আগে দেখাবে)
     products = Product.objects.all().order_by('-id')
+    categories = Category.objects.all()
 
-    # ১. সার্চ ফিল্টার
+    # ১. ক্যাটাগরি ফিল্টার লজিক
+    active_category = None
+    if category_slug:
+        active_category = get_object_or_404(Category, slug=category_slug)
+        products = products.filter(category=active_category)
+    
+    # ২. সার্চ ফিল্টার লজিক
     if query:
         products = products.filter(
             Q(name__icontains=query) | Q(brand__icontains=query)
         ).distinct()
-    
-    # ২. ক্যাটাগরি ফিল্টার
-    if category_slug:
-        products = products.filter(category__slug=category_slug)
 
-    # ৩. স্লাইডার ডাটা
+    # ৩. স্লাইডার ডাটা (আপনার টেমপ্লেটের সাথে মিল রেখে)
     main_slider = Slider.objects.filter(title__icontains="MacBook").first()
     side_1 = Slider.objects.filter(title__icontains="Watch").first()
-    side_2 = Slider.objects.filter(title__icontains="airpords").first() 
+    side_2 = Slider.objects.filter(title__icontains="airpods").first() # বানান ঠিক করা হয়েছে
 
     context = {
-        'products': products[:12],
-        'categories': Category.objects.all(),
+        'products': products, # ফিল্টার করা সব প্রোডাক্ট দেখাবে
+        'categories': categories,
         'main_slider': main_slider,
         'side_1': side_1,
         'side_2': side_2,
         'query': query,
+        'active_category': active_category,
     }
-    # ফিক্স: যদি home.html ফাইলটি core অ্যাপের ভেতর থাকে, তবে 'core/home.html' লিখুন
+    
     return render(request, 'core/home.html', context)
 
 def product_list(request):
-    """সব প্রোডাক্টের লিস্ট ভিউ"""
+    """সব প্রোডাক্টের লিস্ট ভিউ (আলাদা পেজের জন্য)"""
     products = Product.objects.all().order_by('-id')
     return render(request, 'products/product_list.html', {
         'products': products, 
@@ -56,7 +60,7 @@ def product_detail(request, id):
     return render(request, 'products/product_detail.html', {'product': product})
 
 
-# --- ২. API CRUD ভিউ (REST API) ---
+# --- ২. এপিআই সেকশন (React বা Mobile App এর জন্য) ---
 
 @api_view(['GET', 'POST'])
 def product_list_api(request):

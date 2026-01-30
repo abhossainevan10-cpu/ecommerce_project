@@ -1,9 +1,51 @@
 <!DOCTYPE html>
-<html>
-<head><title>Payment Failed</title></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Failed - ES Gadgets</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #fef8f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .fail-card { max-width: 500px; margin: 80px auto; padding: 40px; border-radius: 20px; background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: center; }
+        .icon-box { width: 80px; height: 80px; background: #fff1f0; color: #ff4d4f; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px; border: 2px solid #ff4d4f; }
+        .fail-details { background: #fffafb; padding: 20px; border-radius: 12px; text-align: left; margin-top: 25px; border: 1px solid #ffe8e8; }
+        .btn-retry { background-color: #ff4d4f; color: white; border: none; transition: 0.3s; }
+        .btn-retry:hover { background-color: #d9363e; color: white; transform: translateY(-2px); }
+        .btn-home { border: 2px solid #ccc; color: #666; transition: 0.3s; }
+        .btn-home:hover { background: #f5f5f5; color: #333; }
+        .support-text { font-size: 13px; color: #999; margin-top: 25px; }
+    </style>
+</head>
 <body>
-    <h1 style="color: red;">Payment Failed!</h1>
-    <p>Reason: {{ error }}</p>
-    <a href="{% url 'checkout' %}">Try Again</a>
+
+<div class="container">
+    <div class="fail-card">
+        <div class="icon-box">✕</div>
+        <h2 class="fw-bold" style="color: #434343;">Payment Failed!</h2>
+        <p class="text-muted">দুঃখিত! আপনার পেমেন্টটি সম্পন্ন করা সম্ভব হয়নি। আপনার কার্ড বা পেমেন্ট মেথডে কোনো সমস্যা থাকতে পারে।</p>
+        
+        <div class="fail-details">
+            <p class="mb-2 text-center"><strong>সম্ভাব্য কারণসমূহ:</strong></p>
+            <ul class="text-muted small">
+                <li>ব্যালেন্স পর্যাপ্ত না থাকা।</li>
+                <li>ভুল কার্ড ডিটেইলস প্রদান করা।</li>
+                <li>ইন্টারনেট বা ব্যাংক সার্ভারের সমস্যা।</li>
+            </ul>
+        </div>
+
+        <a href="{% url 'checkout' %}" class="btn btn-retry w-100 mt-4 py-3 fw-bold shadow-sm">
+            Try Again (চেকআউট পেজে ফিরে যান)
+        </a>
+
+        <a href="{% url 'home' %}" class="btn btn-home w-100 mt-3 py-2 fw-bold">Back to Home</a>
+        
+        <p class="support-text">
+            টাকা কেটে নেওয়া হলে চিন্তা করবেন না, ২৪ ঘণ্টার মধ্যে তা রিফান্ড হয়ে যাবে। <br> 
+            প্রয়োজনে যোগাযোগ করুন: <strong>support@esgadgets.com</strong>
+        </p>
+    </div>
+</div>
+
 </body>
-</html>=
+</html>
